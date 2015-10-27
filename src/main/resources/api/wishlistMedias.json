@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title":"Collection of Wishlist Medias",
+  "type":"array",
+  "items":
+  {
+    "$ref":"wishlistMedia"
+  }
+}

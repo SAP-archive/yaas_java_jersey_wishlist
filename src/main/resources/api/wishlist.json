@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title":"Wishlist",
+  "type":"object",
+  "properties":
+  {
+    "id":
+    {
+      "type":"string"
+    },
+    "url":
+    {
+      "type":"string",
+      "format":"uri"
+    },
+    "owner":
+    {
+      "type":"string",
+      "pattern":"^.+"
+    },
+    "title":
+    {
+      "type":"string",
+      "pattern":"^.+"
+    },
+    "description":
+    {
+        "$ref" : "https://api.yaas.io/patterns/v1/schema-localized.json"
+    },
+    "createdAt":
+    {
+      "type":"string",
+      "format":"date-time"
+    },
+    "items":
+    {
+      "type":"array",
+      "items":
+      {
+        "$ref":"wishlistItem"
+      }
+    }
+  },
+  "required":["id","owner","title"]
+}

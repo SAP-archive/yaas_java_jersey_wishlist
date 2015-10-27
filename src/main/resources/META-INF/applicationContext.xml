@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:component-scan base-package="com.sap.wishlist"/>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:/default.properties" />
+		<property name="searchSystemEnvironment" value="true" />
+	</bean>	
+		
+	<bean id="authorizedExecutionTemplate" autowire-candidate="true"
+		class="com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionTemplate">
+		<constructor-arg ref="accessTokenProvider" />
+	</bean>
+
+	<bean id="accessTokenProvider"
+		class="com.sap.cloud.yaas.servicesdk.authorization.cache.SimpleCachingProviderWrapper">
+		<constructor-arg>
+			<bean
+				class="com.sap.cloud.yaas.servicesdk.authorization.protocol.ClientCredentialsGrantProvider">
+				<property name="tokenEndpointUri" value="${OAUTH2_TOKEN_URI}" />
+				<property name="clientId" value="${YAAS_CLIENT_ID}" />
+				<property name="clientSecret" value="${YAAS_CLIENT_SECRET}" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="jsonClient" class="com.sap.wishlist.client.ClientFactory" />
+	    
+	<bean id="documentClient"
+	    class="com.sap.wishlist.client.documentrepository.DocumentClient">
+	    <constructor-arg name="baseUri">
+	        <util:constant static-field="com.sap.wishlist.client.documentrepository.DocumentClient.DEFAULT_BASE_URI" />
+	    </constructor-arg>
+	</bean>
+	
+	<bean id="customerClient"
+	    class="com.sap.wishlist.client.customer.CustomerServiceClient">
+	    <constructor-arg name="baseUri">
+	        <util:constant static-field="com.sap.wishlist.client.customer.CustomerServiceClient.DEFAULT_BASE_URI" />
+	    </constructor-arg>
+	    <constructor-arg name="client" ref="jsonClient" />
+	</bean>
+	
+	<bean id="emailClient"
+	    class="com.sap.wishlist.client.email.EmailServiceClient">
+	    <constructor-arg name="baseUri">
+	        <util:constant static-field="com.sap.wishlist.client.email.EmailServiceClient.DEFAULT_BASE_URI" />
+	    </constructor-arg>
+	</bean>
+	
+</beans>

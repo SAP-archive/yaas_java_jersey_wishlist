@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Mail for You!</title>
+</head>
+<body bgcolor="#282828" color="#FFFFFF" style="font:12px Arial, sans-serif;">
+<table width="100%" cellspacing="0" cellpadding="0" border="0" id="background-table">
+	<tbody>
+	<tr>
+		<td align="center">
+			<table width="500" cellspacing="0" cellpadding="0" border="0">
+				<tbody>
+				<!-- #HEADER
+				================================================== -->
+				<tr>
+					<td width="500" bgcolor="#233347" align="center" id="header">
+ 
+						<table width="500" cellspacing="0" cellpadding="0" border="0">
+							<tbody>
+ 
+							<tr>
+								<td width="440" height="80" align="right" valign="middle">
+									<!-- TODO IMAGE WITH LOGO -->
+ 
+								</td>
+ 
+							</tr>
+ 
+							<tr>
+								<td bgcolor="#27394f" align="center">
+									<table width="500" cellspacing="0" cellpadding="0" border="0">
+										<tbody>
+										<!-- #HEADER
+										================================================== -->
+										<tr>
+											<td width="500" bgcolor="#27394f" align="left" id="header">
+												<!-- End header image -->
+												<table width="500" cellspacing="0" cellpadding="0" border="0">
+													<tbody>
+													<tr>
+														<td width="440" align="left" valign="top" style="padding: 0 40px; color: #FFF">
+															<br/>
+															<h1 style="font-size: 30px; font-weight: bold; margin: 0;">
+																Wishlist Created: $body.title
+															</h1>
+															<br/>
+															<br/>
+															<p style="font-size: 13px; margin: 0;">$body.description</p>
+															<br/>
+														</td>
+													</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+ 
+							<tr>
+								<td width="440" align="left" valign="top" style="padding:0 40px;color:#FFF;font-size:12px;">
+ 
+									<p style="line-height:18px;padding:20px 0 16px 0;margin:0;border-bottom:1px solid #FFF; "></p>
+ 
+									<p style="line-height:18px;padding:20px 0 16px 0;margin:0; ">
+										<!-- TODO FOOTER -->
+									</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+ 
+						<!-- End header image -->
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+	</tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title":"ProjectMedia",
+  "type":"object",
+  "properties":
+  {
+    "id":
+    {
+      "type":"String"
+    },
+    "uri":
+    {
+      "type":"uri"
+    }
+  }
+}

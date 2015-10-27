@@ -1,0 +1,23 @@
+{
+  "id":"98hw85Y945e6U358",
+  "url":"http://myApi.de/wishlists/98hw85Y945e6U358",
+  "owner":"345MWyh7w4hY98W6",
+  "title":"Floyd's Birthday Wishlist",
+  "description":"Bring on the presents:)",
+  "createdAt":"2012-07-12T12:42:23.777Z",
+  "items":
+  [
+    {
+      "product":"yKsU0y+PQUPgTIYm",
+      "amount":"1",
+      "note":"Always wanted a Ferrari",
+      "createdAt":"2012-07-12T13:23:31.415Z"
+    },
+    {
+      "product":"ZdHErqRBhnJhJiVN",
+      "amount":"4",
+      "note":"Need some cool wheels for my new Ferrari",
+      "createdAt":"2012-07-12T13:37:11.111Z"
+    }
+  ]
+}

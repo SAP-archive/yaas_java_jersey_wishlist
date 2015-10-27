@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- include Service SDK libraries -->
+	<import resource="classpath:/META-INF/libraries-spring.xml"/>
+
+	<!-- include the generated context -->
+	<import resource="classpath:/META-INF/applicationContext.xml"/>
+
+	<!-- import placeholder values from property files and environment, see default.properties -->
+	<context:property-placeholder location="classpath:/default.properties,classpath*:test.properties"/>
+
+	<!-- take annotation-based configuration into account, when instantiating beans -->
+	<context:annotation-config/>
+
+</beans>

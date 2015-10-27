@@ -1,0 +1,14 @@
+{
+    "name": "hybris Service",
+    "references":[
+        {
+            "namespace": "api",
+            "description": "API definition of java-jersey-wishlist",
+            "path": "/",
+            "type": "raml",
+            "fileName": "java-jersey-wishlist.raml",
+            "packageName": "com.sap.wishlist.api.generated",
+            "async": false
+        }
+    ]
+}

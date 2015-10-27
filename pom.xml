@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.sap.cloud.yaas.service-sdk</groupId>
+		<artifactId>service-sdk-superpom</artifactId>
+		<version>4.3.4</version>
+		<relativePath />
+	</parent>
+
+	<groupId>com.sap.cloud.yaas.service-sdk.example</groupId>
+	<artifactId>java-jersey-wishlist</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<!-- SAP projects -->
+		<service-sdk.version>4.3.4</service-sdk.version>
+
+		<!-- plugins -->
+		<jetty.plugin.version>9.3.2.v20150730</jetty.plugin.version>
+
+		<!-- libraries -->
+		<jaxrs.version>2.0.1</jaxrs.version>
+		<jersey.version>2.19</jersey.version>
+		<javax.servlet.version>3.1.0</javax.servlet.version>
+		<spring.version>4.2.0.RELEASE</spring.version>
+		<cors.filter.version>2.4</cors.filter.version>
+
+		<!-- test libraries -->
+		<junit.version>4.12</junit.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.sap.cloud.yaas.service-sdk</groupId>
+			<artifactId>service-sdk-libraries</artifactId>
+			<version>${service-sdk.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.cloud.yaas.service-sdk</groupId>
+			<artifactId>service-sdk-authorization</artifactId>
+			<version>${service-sdk.version}</version>
+		</dependency>
+		<!-- Jersey Dependencies -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${jaxrs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-spring3</artifactId>
+			<version>${jersey.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-bean-validation</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
+			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- Servlet Dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- CORS support -->
+		<dependency>
+			<groupId>com.thetransactioncompany</groupId>
+			<artifactId>cors-filter</artifactId>
+			<version>${cors.filter.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>java-jersey-wishlist</finalName>
+		<plugins>
+        
+            <plugin>
+                <groupId>com.sap.cloud.yaas.service-sdk</groupId>
+                <artifactId>service-sdk-generator-maven-plugin</artifactId>
+                <version>${service-sdk.version}</version>
+                <executions>
+                    <execution>
+                        <id>Service</id>
+                        <goals>
+                            <goal>generate-service</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>Customer</id>
+                        <goals>
+                            <goal>generate-client</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRamlUri>https://api.yaas.io/hybris/customer/b1/api-console/raml/api/api-specification.raml</sourceRamlUri>
+                            <basePackage>com.sap.wishlist.client.customer</basePackage>
+                        </configuration>
+                    </execution>
+                    
+                    <execution>
+                        <id>DocumentRepository</id>
+                        <goals>
+                            <goal>generate-client</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRamlUri>https://api.yaas.io/hybris/document/b2/api-console/raml/api/document.raml</sourceRamlUri>
+                            <basePackage>com.sap.wishlist.client.documentrepository</basePackage>
+                        </configuration>
+                    </execution>
+                    
+                    <execution>
+                        <id>EMail</id>
+                        <goals>
+                            <goal>generate-client</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRamlUri>https://api.yaas.io/hybris/email/b1/api-console/raml/api/emailservice.raml</sourceRamlUri>
+                            <basePackage>com.sap.wishlist.client.email</basePackage>
+                        </configuration>
+                    </execution>
+                    
+                    <execution>
+                        <id>MediaRepository</id>
+                        <goals>
+                            <goal>generate-client</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRamlUri>https://api.yaas.io/hybris/media/b2/api-console/raml/api/media.raml</sourceRamlUri>
+                            <basePackage>com.sap.wishlist.client.mediaRepository</basePackage>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.plugin.version}</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/</contextPath>
+					</webApp>
+				</configuration>
+			</plugin>
+
+
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.sap.cloud.yaas.service-sdk</groupId>
+										<artifactId>service-sdk-generator-maven-plugin</artifactId>
+										<versionRange>[${service-sdk.version},)</versionRange>
+										<goals>
+											<goal>generate-service</goal>
+											<goal>generate-client</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

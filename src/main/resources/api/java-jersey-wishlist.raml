@@ -1,0 +1,132 @@
+#%RAML 0.8
+title: Wishlist Service
+baseUri: http://localhost/
+version: v1
+mediaType:  application/json
+
+schemas:
+  - error: !include https://api.yaas.io/patterns/v1/schema-error-message.json
+  - documentMetaData: !include document/MetaData.json
+  - documentPostResponse: !include document/POSTresponse.json
+  - documentWishlist: !include document/Wishlist.json
+  - documentWishlistRead: !include document/WishlistRead.json
+  - documentWishlistMedia: !include document/WishlistMedia.json
+  - documentWishlistMediaRead: !include document/WishlistMediaRead.json
+  - resourceLocation: !include https://api.yaas.io/patterns/v1/schema-resource-location.json
+  - customer: !include customer.json
+  - wishlist: !include wishlist.json
+  - wishlistItem: !include wishlistItem.json
+  - wishlists: !include wishlists.json
+  - wishlistMedia: !include wishlistMedia.json
+  - wishlistMedias: !include wishlistMedias.json
+
+traits: 
+  - !include https://api.yaas.io/patterns/v1/trait-yaas-aware.yaml
+  - !include https://api.yaas.io/patterns/v2/trait-paged.yaml
+
+resourceTypes: 
+  - !include https://api.yaas.io/patterns/v1/resource-type-element.yaml
+  - !include https://api.yaas.io/patterns/v1/resource-type-collection.yaml
+
+/wishlists:
+  type: collection
+  is: [yaasAware]
+  get:
+    is: [paged]
+    description: Get all wishlists.
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include wishlists-example.json
+  post:
+    description: Check if the owner exists as a customer in the system, create a new wishlist, and send an e-mail to the customer.
+    body:
+      application/json:
+        example: !include wishlist-example.json
+
+  /{wishlistId}:
+    type: element
+    is: [yaasAware]
+    uriParameters:
+      wishlistId:
+        description: The ID of the wishlist to work on.
+        example: 784hti8ey
+        type: string
+    get:
+      description: Get a wishlist.
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include wishlist-example.json
+
+    put:
+      description: Update a wishlist.
+      body:
+        application/json:
+          example: !include wishlist-example.json
+
+    delete:
+      description: Delete a wishlist.
+    /media:
+      is: [yaasAware]
+      post:
+        body: 
+          multipart/form-data: 
+            formParameters: 
+                file: 
+                    description: |
+                        Actual file content.
+                    type: file
+                    required: false
+                    repeat: false
+        responses: 
+          201: 
+            description: |
+                The request succeeded and a new object was created.
+            body: 
+                application/json: 
+                    schema: resourceLocation
+          400: 
+            description: |
+                Bad or incomplete request.
+            body: 
+              application/json: 
+                  schema: errorMessage
+      get:
+        is: [ paged ]
+        responses: 
+          200: 
+            description: |
+                The request succeeded and a new object was created.
+            body: 
+              "application/json": 
+                  schema: wishlistMedias
+                  example: !include wishlistMedias-example.json
+          400: 
+            description: |
+                Bad or incomplete request.
+            body: 
+              "application/json": 
+                  schema: errorMessage
+      /{mediaId}:
+        is: [yaasAware]
+        uriParameters:
+          "mediaId":
+            displayName: "mediaId"
+            type: string
+            required: true
+            repeat: false
+        delete:
+          responses:
+            204:
+              description : |
+                The resource has been successfully deleted.
+            404: 
+                description: |
+                    Media not found.
+                body: 
+                    application/json: 
+                        schema: "errorMessage"
+

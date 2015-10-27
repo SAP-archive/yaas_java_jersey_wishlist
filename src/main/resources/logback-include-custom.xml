@@ -1,0 +1,3 @@
+<included>
+	<logger name="com.sap.wishlist" level="DEBUG" />
+</included>
