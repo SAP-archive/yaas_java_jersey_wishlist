@@ -44,7 +44,7 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	private static final String ROOT_RESOURCE_PATH = "/wishlists";
 	private static final String REQUEST_URI = "https://local/wishlists";
 	private static final String CLIENT = "test";
-	private static final String TEST_FILE_FOR_UPLOAD = "src/test/resources/800x600.png";
+	private static final String TEST_FILE_FOR_UPLOAD = "src/test/resources/testMedia.png";
 
 	private static Wishlist wishlist;
 
