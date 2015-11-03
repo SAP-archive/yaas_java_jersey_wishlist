@@ -23,6 +23,7 @@ schemas:
 traits: 
   - !include https://api.yaas.io/patterns/v1/trait-yaas-aware.yaml
   - !include https://api.yaas.io/patterns/v2/trait-paged.yaml
+  - !include https://api.yaas.io/patterns/v1/trait-countable.yaml
 
 resourceTypes: 
   - !include https://api.yaas.io/patterns/v1/resource-type-element.yaml
@@ -32,7 +33,7 @@ resourceTypes:
   type: collection
   is: [yaasAware]
   get:
-    is: [paged]
+    is: [paged,countable]
     description: Get all wishlists.
     responses:
       200:
@@ -95,7 +96,7 @@ resourceTypes:
               application/json: 
                   schema: errorMessage
       get:
-        is: [ paged ]
+        is: [ paged,countable ]
         responses: 
           200: 
             description: |

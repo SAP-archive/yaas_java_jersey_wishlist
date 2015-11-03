@@ -3,11 +3,14 @@ package com.sap.wishlist.service;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
@@ -17,10 +20,12 @@ import com.sap.cloud.yaas.servicesdk.authorization.AccessToken;
 import com.sap.cloud.yaas.servicesdk.authorization.DiagnosticContext;
 import com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionCallback;
 import com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionTemplate;
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginatedCollection;
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginationRequest;
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginationSupport;
 import com.sap.cloud.yaas.servicesdk.patternsupport.schemas.ResourceLocation;
 import com.sap.wishlist.api.generated.DocumentWishlistMedia;
 import com.sap.wishlist.api.generated.DocumentWishlistMediaRead;
-import com.sap.wishlist.api.generated.PagedParameters;
 import com.sap.wishlist.api.generated.WishlistMedia;
 import com.sap.wishlist.api.generated.YaasAwareParameters;
 import com.sap.wishlist.client.documentrepository.DocumentClient;
@@ -120,10 +125,10 @@ public class WishlistMediaService {
 	}
 
 	/* GET //{wishlistId}/media */
-	public Response getByWishlistIdMedia(PagedParameters paged,
+	public Response getByWishlistIdMedia(final UriInfo uriInfo, PaginationRequest pagingContext,
 			YaasAwareParameters yaasAware, String wishlistId) {
 		// Return parameter
-		ArrayList<WishlistMedia> result = null;
+		List<WishlistMedia> resultList = null;
 
 		Response response = authorizedExecutionTemplate.executeAuthorized(
 				authorizationHelper.getAuthorizationScope(
@@ -141,8 +146,9 @@ public class WishlistMediaService {
 								.prepareGet()
 								.withAuthorization(
 										authorizationHelper.buildToken(token))
-								.withPageNumber(paged.getPageNumber())
-								.withPageSize(paged.getPageSize()).execute();
+								.withTotalCount(pagingContext.isCountingTotal())
+								.withPageNumber(pagingContext.getPageNumber())
+								.withPageSize(pagingContext.getPageSize()).execute();
 					}
 				});
 
@@ -150,7 +156,7 @@ public class WishlistMediaService {
 			ErrorHandler.handleResponse(response);
 		}
 
-		result = new ArrayList<WishlistMedia>();
+		resultList = new ArrayList<WishlistMedia>();
 		for (DocumentWishlistMediaRead documentWishlistMedia : response
 				.readEntity(DocumentWishlistMediaRead[].class)) {
 			WishlistMedia wishlistMedia = new WishlistMedia();
@@ -158,10 +164,21 @@ public class WishlistMediaService {
 			wishlistMedia.setUri(MediaClient.DEFAULT_BASE_URI + "/"
 					+ yaasAware.getHybrisTenant() + "/" + client + "/media/"
 					+ documentWishlistMedia.getWishlistMedia().getId());
-			result.add(wishlistMedia);
+			resultList.add(wishlistMedia);
 		}
 
-		return Response.ok().entity(result).build();
+		PaginatedCollection<WishlistMedia> result = 
+				PaginatedCollection.<WishlistMedia>of(resultList)
+				.withNextPage(PaginationSupport.extractNextPageFromResponse(response))
+				.withTotalCount(PaginationSupport.extractCountFromResponse(response, pagingContext))
+				.withPageNumber(pagingContext.getPageNumber())
+				.withPageSize(pagingContext.getPageSize())
+				.build();
+		
+		ResponseBuilder responseBuilder = Response.ok();
+		PaginationSupport.decorateResponseWithCount(responseBuilder, result);
+		PaginationSupport.decorateResponseWithPage(uriInfo, responseBuilder, result);
+		return responseBuilder.entity(result).build();
 	}
 
 	/* DELETE //{wishlistId}/media/{mediaId} */

@@ -12,6 +12,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.springframework.stereotype.Component;
 
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginationRequest;
 import com.sap.wishlist.service.WishlistMediaService;
 import com.sap.wishlist.service.WishlistService;
 
@@ -34,9 +35,9 @@ public class DefaultWishlistsResource implements WishlistsResource {
 
 	/* GET / */
 	@Override
-	public Response get(final PagedParameters paged,
+	public Response get(final CountableParameters countable, final PagedParameters paged,
 			final YaasAwareParameters yaasAware) {
-		return wishlistService.get(paged, yaasAware);
+		return wishlistService.get(uriInfo, new PaginationRequest(paged.getPageNumber(), paged.getPageSize(), countable.isTotalCount()), yaasAware);
 	}
 
 	/* POST / */
@@ -81,9 +82,10 @@ public class DefaultWishlistsResource implements WishlistsResource {
 
 	/* GET //{wishlistId}/media */
 	@Override
-	public Response getByWishlistIdMedia(PagedParameters paged,
+	public Response getByWishlistIdMedia(final CountableParameters countable, PagedParameters paged,
 			YaasAwareParameters yaasAware, String wishlistId) {
-		return wishlistMediaService.getByWishlistIdMedia(paged, yaasAware,
+		return wishlistMediaService.getByWishlistIdMedia(
+				uriInfo, new PaginationRequest(paged.getPageNumber(), paged.getPageSize(), countable.isTotalCount()), yaasAware,
 				wishlistId);
 	}
 
