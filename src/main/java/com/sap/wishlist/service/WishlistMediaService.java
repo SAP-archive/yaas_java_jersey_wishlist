@@ -125,7 +125,7 @@ public class WishlistMediaService {
 	}
 
 	/* GET //{wishlistId}/media */
-	public Response getByWishlistIdMedia(final UriInfo uriInfo, PaginationRequest pagingContext,
+	public Response getByWishlistIdMedia(final UriInfo uriInfo, PaginationRequest paginationRequest,
 			YaasAwareParameters yaasAware, String wishlistId) {
 		// Return parameter
 		List<WishlistMedia> resultList = null;
@@ -146,9 +146,9 @@ public class WishlistMediaService {
 								.prepareGet()
 								.withAuthorization(
 										authorizationHelper.buildToken(token))
-								.withTotalCount(pagingContext.isCountingTotal())
-								.withPageNumber(pagingContext.getPageNumber())
-								.withPageSize(pagingContext.getPageSize()).execute();
+								.withTotalCount(paginationRequest.isCountingTotal())
+								.withPageNumber(paginationRequest.getPageNumber())
+								.withPageSize(paginationRequest.getPageSize()).execute();
 					}
 				});
 
@@ -168,14 +168,9 @@ public class WishlistMediaService {
 		}
 
 		PaginatedCollection<WishlistMedia> result = 
-				PaginatedCollection.<WishlistMedia>of(resultList)
-				.withNextPage(PaginationSupport.extractNextPageFromResponse(response))
-				.withTotalCount(PaginationSupport.extractCountFromResponse(response, pagingContext))
-				.withPageNumber(pagingContext.getPageNumber())
-				.withPageSize(pagingContext.getPageSize())
-				.build();
+				PaginatedCollection.<WishlistMedia>of(resultList).with(response, paginationRequest).build();
 		
-		ResponseBuilder responseBuilder = Response.ok();
+		ResponseBuilder responseBuilder = Response.ok(result);
 		PaginationSupport.decorateResponseWithCount(responseBuilder, result);
 		PaginationSupport.decorateResponseWithPage(uriInfo, responseBuilder, result);
 		return responseBuilder.entity(result).build();
