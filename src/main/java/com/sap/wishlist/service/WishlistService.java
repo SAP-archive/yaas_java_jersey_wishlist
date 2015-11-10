@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.sap.cloud.yaas.servicesdk.authorization.AccessToken;
@@ -46,6 +47,7 @@ import com.sap.wishlist.utility.ErrorHandler;
 public class WishlistService {
 
 	public static final String WISHLIST_PATH = "wishlist";
+	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(WishlistService.class);
 
 	@Inject
 	private EmailServiceClient emailClient;
@@ -59,7 +61,7 @@ public class WishlistService {
 	private AuthorizationHelper authorizationHelper;
 	@Value("${YAAS_CLIENT}")
 	private String client;
-
+	
 	private final String TEMPLATE_CODE = "wishlist";
 
 	/* GET / */
@@ -315,9 +317,10 @@ public class WishlistService {
 		emailTemplateDefinition
 				.setTemplateAttributeDefinitions(templateAttributeDefinition);
 
+		String hybrisTenant = yaasAware.getHybrisTenant();
 		Response response = authorizedExecutionTemplate.executeAuthorized(
 				authorizationHelper.getAuthorizationScope(
-						yaasAware.getHybrisTenant(),
+						hybrisTenant,
 						authorizationHelper.getScopes()),
 				new DiagnosticContext(yaasAware.getHybrisRequestId(), yaasAware
 						.getHybrisHop()),
@@ -325,7 +328,7 @@ public class WishlistService {
 					@Override
 					public Response execute(final AccessToken token) {
 						return emailClient
-								.tenantTemplates(yaasAware.getHybrisTenant())
+								.tenantTemplates(hybrisTenant)
 								.preparePost()
 								.withAuthorization(
 										authorizationHelper.buildToken(token))
@@ -339,14 +342,14 @@ public class WishlistService {
 			EmailTemplate templateSubject = EmailTemplate.builder()
 					.setFilePath("templates" + File.separator + "subject.vm")
 					.setCode(TEMPLATE_CODE)
-					.setOwner(yaasAware.getHybrisTenant())
+					.setOwner(hybrisTenant)
 					.setFileType("subject").setLocale("en").build();
 			uploadTemplate(yaasAware, templateSubject);
 
 			EmailTemplate templateBody = EmailTemplate.builder()
 					.setFilePath("templates" + File.separator + "body.vm")
 					.setCode(TEMPLATE_CODE)
-					.setOwner(yaasAware.getHybrisTenant()).setFileType("body")
+					.setOwner(hybrisTenant).setFileType("body")
 					.setLocale("en").build();
 			uploadTemplate(yaasAware, templateBody);
 
@@ -355,7 +358,7 @@ public class WishlistService {
 		// Send Mail
 		Email eMail = new Email();
 		eMail.setToAddress(mail);
-		eMail.setFromAddress("noreply@cf.hybris.com");
+		eMail.setFromAddress("noreply@" + hybrisTenant + ".mail.yaas.io");
 		eMail.setTemplateOwner(this.client);
 		eMail.setTemplateCode(TEMPLATE_CODE);
 		eMail.setLocale("en");
@@ -369,7 +372,7 @@ public class WishlistService {
 
 		response = authorizedExecutionTemplate.executeAuthorized(
 				authorizationHelper.getAuthorizationScope(
-						yaasAware.getHybrisTenant(),
+						hybrisTenant,
 						authorizationHelper.getScopes()),
 				new DiagnosticContext(yaasAware.getHybrisRequestId(), yaasAware
 						.getHybrisHop()),
@@ -377,7 +380,7 @@ public class WishlistService {
 					@Override
 					public Response execute(final AccessToken token) {
 						return emailClient
-								.tenantSend(yaasAware.getHybrisTenant())
+								.tenantSendAsync(hybrisTenant)
 								.preparePost()
 								.withAuthorization(
 										authorizationHelper.buildToken(token))
@@ -386,6 +389,7 @@ public class WishlistService {
 				});
 
 		if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
+			LOG.warn("Send mail unsuccessful");
 			return false;
 		}
 		return true;
