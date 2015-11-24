@@ -14,6 +14,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -43,6 +44,7 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	 */
 	private static final String ROOT_RESOURCE_PATH = "/wishlists";
 	private static final String REQUEST_URI = "https://local/wishlists";
+	private static final String WISHLIST_ITEMS_PATH = "wishlistItems";
 	private static final String CLIENT = "test";
 	private static final String TEST_FILE_FOR_UPLOAD = "src/test/resources/testMedia.png";
 
@@ -295,6 +297,63 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
 				.delete();
 	}
+
+	@Test
+	// get() /wishlists/wishlistId/wishlistItems
+	public void testGetByWishlistIdWishlistItems() {
+
+		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
+			"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
+		final Response response = target.request()
+			.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+			.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+			.get();
+
+		Assert.assertNotNull("Response must not be null", response);
+		Assert.assertEquals("Response does not have expected response code",
+			Status.OK.getStatusCode(), response.getStatus());
+		Assert.assertNotNull("Response must not be null", response.readEntity(WishlistItem[].class));
+	}
+
+	@Test
+	// post() /wishlists/wishlistId/wishlistItems
+	public void testPostByWishlistIdWishlistItems() {
+		List<WishlistItem> wishlistItems = new ArrayList<WishlistItem>();
+		WishlistItem item = new WishlistItem();
+		item.setProduct("Item1");
+		item.setAmount(1);
+		wishlistItems.add(item);
+		wishlist.setItems(wishlistItems);
+
+		final WebTarget target_post = getRootTarget(ROOT_RESOURCE_PATH).path(
+			"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
+
+		final Entity<WishlistItem> entity = Entity.entity(item,
+			"application/json");
+
+		final Response response_post = target_post.request()
+			.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+			.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+			.post(entity);
+
+		Assert.assertNotNull("Response must not be null", response_post);
+		Assert.assertEquals("Response does not have expected response code",
+			Status.CREATED.getStatusCode(), response_post.getStatus());
+
+		final WebTarget target_get = getRootTarget(ROOT_RESOURCE_PATH).path(
+			"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
+		final Response response_get = target_get.request()
+			.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+			.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+			.get();
+
+		Assert.assertNotNull("Response must not be null", response_get);
+		Assert.assertEquals("Response does not have expected response code",
+			Status.OK.getStatusCode(), response_get.getStatus());
+
+		Assert.assertEquals(1, response_get.readEntity(WishlistItem[].class).length);
+	}
+
 
 	@Override
 	protected ResourceConfig configureApplication() {

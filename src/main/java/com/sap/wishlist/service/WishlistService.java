@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -26,11 +28,13 @@ import com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecuti
 import com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionTemplate;
 import com.sap.wishlist.api.generated.Customer;
 import com.sap.wishlist.api.generated.DocumentWishlist;
+import com.sap.wishlist.api.generated.DocumentWishlistItemRead;
 import com.sap.wishlist.api.generated.DocumentWishlistRead;
 import com.sap.wishlist.api.generated.Error;
 import com.sap.wishlist.api.generated.PagedParameters;
 import com.sap.wishlist.api.generated.ResourceLocation;
 import com.sap.wishlist.api.generated.Wishlist;
+import com.sap.wishlist.api.generated.WishlistItem;
 import com.sap.wishlist.api.generated.YaasAwareParameters;
 import com.sap.wishlist.client.customer.CustomerServiceClient;
 import com.sap.wishlist.client.documentrepository.DocumentClient;
@@ -47,6 +51,7 @@ import com.sap.wishlist.utility.ErrorHandler;
 public class WishlistService {
 
 	public static final String WISHLIST_PATH = "wishlist";
+	public static final String WISHLIST_ITEMS_PATH = "wishlistItems";
 	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(WishlistService.class);
 
 	@Inject
@@ -61,7 +66,7 @@ public class WishlistService {
 	private AuthorizationHelper authorizationHelper;
 	@Value("${YAAS_CLIENT}")
 	private String client;
-	
+
 	private final String TEMPLATE_CODE = "wishlist";
 
 	/* GET / */
@@ -201,7 +206,13 @@ public class WishlistService {
 	}
 
 	/* GET //{wishlistId} */
-	public Response getByWishlistId(final YaasAwareParameters yaasAware,
+	public Response getByWishlistId(final YaasAwareParameters yaasAware, final java.lang.String wishlistId) {
+		Wishlist wishlist = getWishlistUsingDocumentClient(yaasAware, wishlistId);
+		return Response.ok(wishlist).build();
+	}
+
+	// Gets the wishlist for a given wishlistId
+	private Wishlist getWishlistUsingDocumentClient(final YaasAwareParameters yaasAware,
 			final java.lang.String wishlistId) {
 		Response response = authorizedExecutionTemplate.executeAuthorized(
 				authorizationHelper.getAuthorizationScope(
@@ -230,7 +241,8 @@ public class WishlistService {
 
 		DocumentWishlistRead documentWishlistRead = response
 				.readEntity(DocumentWishlistRead.class);
-		return Response.ok(documentWishlistRead.getWishlist()).build();
+		Wishlist wishlist = documentWishlistRead.getWishlist();
+		return wishlist;
 	}
 
 	/* PUT //{wishlistId} */
@@ -423,5 +435,90 @@ public class WishlistService {
 								.execute();
 					}
 				});
+	}
+
+
+	/* GET //{wishlistId}/wishlistItems */
+	public Response getByWishlistIdWishlistItems(final PagedParameters paged, YaasAwareParameters yaasAware,
+		    String wishlistId) {
+
+		ArrayList<WishlistItem> result = getWishlistItemsUsingDocumentClient(paged, yaasAware, wishlistId);
+		return Response.ok().entity(result).build();
+	    }
+
+	    private ArrayList<WishlistItem> getWishlistItemsUsingDocumentClient(PagedParameters paged,
+		    YaasAwareParameters yaasAware,
+		    String wishlistId) {
+		ArrayList<WishlistItem> result = null;
+
+		Response response = authorizedExecutionTemplate.executeAuthorized(
+			authorizationHelper.getAuthorizationScope(yaasAware.getHybrisTenant(), authorizationHelper.getScopes()),
+			new DiagnosticContext(yaasAware.getHybrisRequestId(), yaasAware.getHybrisHop()),
+			new AuthorizedExecutionCallback<Response>() {
+			    @Override
+			    public Response execute(final AccessToken token) {
+				return documentClient
+					.tenant(yaasAware.getHybrisTenant())
+					.clientData(client)
+					.type(WISHLIST_PATH)
+					.dataId(wishlistId)
+					.prepareGet()
+					.withAuthorization(authorizationHelper.buildToken(token))
+					.execute();
+			    }
+			});
+
+		if (response.getStatus() != Status.OK.getStatusCode()) {
+		    ErrorHandler.handleResponse(response);
+		} else {
+		    result = new ArrayList<WishlistItem>();
+		    Wishlist wishlist = response.readEntity(DocumentWishlistRead.class).getWishlist();
+		    List<WishlistItem> wishlistItems = wishlist.getItems();
+
+		    if (wishlistItems != null) {
+			int lastIndexOfItems = wishlistItems.size() - 1;
+			int pageNum = paged.getPageNumber();
+			int pageSize = paged.getPageSize();
+
+			int index_of_startItem = pageNum * pageSize - pageSize;
+			int index_of_endItem = pageNum * pageSize - 1;
+
+			 List<WishlistItem> items = null;
+			if (index_of_endItem <= lastIndexOfItems) {
+			   items = IntStream.range(index_of_startItem, index_of_endItem + 1)
+				    .mapToObj(i -> wishlistItems.get(i)).collect(Collectors.toList());
+			    result.addAll(items);
+			} else if(index_of_endItem > lastIndexOfItems){
+			    items = IntStream.range(index_of_startItem, lastIndexOfItems +1)
+				    .mapToObj(i -> wishlistItems.get(i)).collect(Collectors.toList());
+			    result.addAll(items);
+			}
+		    }
+		}
+		return result;
+	}
+
+	/* POST /{wishlistId}/wishlistItems */
+	public Response postByWishlistIdWishlistItems(YaasAwareParameters yaasAware, UriInfo uriInfo, String wishlistId,
+		    final WishlistItem wishlistItem) {
+		Wishlist wishlist = this.getWishlistUsingDocumentClient(yaasAware, wishlistId);
+		List<WishlistItem> wishlist_items = wishlist.getItems();
+		if (wishlist_items != null) {
+		    wishlist_items.add(wishlistItem);
+		} else {
+		    wishlist_items = new ArrayList<WishlistItem>();
+		    wishlist_items.add(wishlistItem);
+		}
+		wishlist.setItems(wishlist_items);
+		Response response = this.putByWishlistId(yaasAware, wishlistId,
+			wishlist);
+		if (response.getStatus() != Status.OK.getStatusCode()) {
+		    ErrorHandler.handleResponse(response);
+		}
+		DocumentWishlistItemRead documentWishlistItem = new DocumentWishlistItemRead();
+		documentWishlistItem.setWishlistItem(wishlistItem);
+		URI createdLocation = uriInfo.getRequestUriBuilder().path("/" + wishlist.getId() + "/" +
+			WISHLIST_ITEMS_PATH).build();
+		return Response.created(createdLocation).entity(documentWishlistItem).build();
 	}
 }

@@ -94,4 +94,21 @@ public class DefaultWishlistsResource implements WishlistsResource {
 		return wishlistMediaService.deleteByWishlistIdMediaByMediaId(yaasAware,
 				wishlistId, mediaId);
 	}
+
+	/*GET //{wishlistId}/wishlistItems*/
+	@Override
+	public Response getByWishlistIdWishlistItems(PagedParameters paged, YaasAwareParameters yaasAware, String wishlistId) {
+		return wishlistService.getByWishlistIdWishlistItems(paged, yaasAware, wishlistId);
+	}
+
+	/*POST //{wishlistId}/wishlistItems */
+	@Override
+	public Response postByWishlistIdWishlistItems(YaasAwareParameters yaasAware, String wishlistId,
+			WishlistItem wishlistItem) {
+		return wishlistService.postByWishlistIdWishlistItems(yaasAware, uriInfo, wishlistId, wishlistItem);
+
+	}
+
+
+
 }

@@ -9,6 +9,8 @@ schemas:
   - documentMetaData: !include document/MetaData.json
   - documentPostResponse: !include document/POSTresponse.json
   - documentWishlist: !include document/Wishlist.json
+  - documentWishlistItem: !include document/WishlistItem.json
+  - documentWishlistItemRead: !include document/WishlistItemRead.json
   - documentWishlistRead: !include document/WishlistRead.json
   - documentWishlistMedia: !include document/WishlistMedia.json
   - documentWishlistMediaRead: !include document/WishlistMediaRead.json
@@ -16,6 +18,7 @@ schemas:
   - customer: !include customer.json
   - wishlist: !include wishlist.json
   - wishlistItem: !include wishlistItem.json
+  - wishlistItems: !include wishlistItems.json
   - wishlists: !include wishlists.json
   - wishlistMedia: !include wishlistMedia.json
   - wishlistMedias: !include wishlistMedias.json
@@ -27,6 +30,7 @@ traits:
 resourceTypes: 
   - !include https://api.yaas.io/patterns/v1/resource-type-element.yaml
   - !include https://api.yaas.io/patterns/v1/resource-type-collection.yaml
+
 
 /wishlists:
   type: collection
@@ -69,6 +73,7 @@ resourceTypes:
 
     delete:
       description: Delete a wishlist.
+      
     /media:
       is: [yaasAware]
       post:
@@ -129,4 +134,23 @@ resourceTypes:
                 body: 
                     application/json: 
                         schema: "errorMessage"
-
+    /wishlistItems:
+      type: collection
+      is: [yaasAware]
+      get:
+        description: Gets all wishlist items
+        is: [ paged ]
+        responses:
+          200:
+            body:
+              application/json:
+      post:
+        description: Adds a wishlist item
+        body:
+          application/json:
+            example: !include wishlistItem-example.json
+        responses:
+          201:
+            body:
+              application/json:
+                example: !include wishlistItem-example.json
