@@ -30,7 +30,7 @@ import com.sap.wishlist.utility.ErrorHandler;
 
 @ManagedBean
 public class WishlistMediaService {
-	private final String TYPE = "projectMedia";
+	private final String TYPE = "wishlistMedia";
 
 	@Inject
 	private MediaClient mediaClient;
@@ -84,6 +84,7 @@ public class WishlistMediaService {
 		final DocumentWishlistMedia documentWishlistMedia = new DocumentWishlistMedia();
 		WishlistMedia wishlistMedia = new WishlistMedia();
 		wishlistMedia.setId(location.getId());
+		wishlistMedia.setUri(location);
 
 		documentWishlistMedia.setWishlistId(wishlistId);
 		documentWishlistMedia.setWishlistMedia(wishlistMedia);
@@ -138,6 +139,8 @@ public class WishlistMediaService {
 								.tenant(yaasAware.getHybrisTenant())
 								.clientData(client)
 								.type(TYPE)
+								// get only the media with wishlistId
+								.withQuery("q", "wishlistId:" + wishlistId)
 								.prepareGet()
 								.withAuthorization(
 										authorizationHelper.buildToken(token))
