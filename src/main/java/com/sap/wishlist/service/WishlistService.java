@@ -480,19 +480,17 @@ public class WishlistService {
 			int pageNum = paged.getPageNumber();
 			int pageSize = paged.getPageSize();
 
-			int index_of_startItem = pageNum * pageSize - pageSize;
-			int index_of_endItem = pageNum * pageSize - 1;
+			int indexOfStartItem = pageNum * pageSize - pageSize;
+			int indexOfEndItem = pageNum * pageSize - 1;
 
-			 List<WishlistItem> items = null;
-			if (index_of_endItem <= lastIndexOfItems) {
-			   items = IntStream.range(index_of_startItem, index_of_endItem + 1)
-				    .mapToObj(i -> wishlistItems.get(i)).collect(Collectors.toList());
-			    result.addAll(items);
-			} else if(index_of_endItem > lastIndexOfItems){
-			    items = IntStream.range(index_of_startItem, lastIndexOfItems +1)
-				    .mapToObj(i -> wishlistItems.get(i)).collect(Collectors.toList());
-			    result.addAll(items);
-			}
+			int min = Math.min(indexOfEndItem, lastIndexOfItems);
+
+			List<WishlistItem> items = null;
+
+			items = IntStream.range(indexOfStartItem, min + 1)
+				.mapToObj(i -> wishlistItems.get(i)).collect(Collectors.toList());
+			result.addAll(items);
+
 		    }
 		}
 		return result;
@@ -502,14 +500,14 @@ public class WishlistService {
 	public Response postByWishlistIdWishlistItems(YaasAwareParameters yaasAware, UriInfo uriInfo, String wishlistId,
 		    final WishlistItem wishlistItem) {
 		Wishlist wishlist = this.getWishlistUsingDocumentClient(yaasAware, wishlistId);
-		List<WishlistItem> wishlist_items = wishlist.getItems();
-		if (wishlist_items != null) {
-		    wishlist_items.add(wishlistItem);
+		List<WishlistItem> wishlistItems = wishlist.getItems();
+		if (wishlistItems != null) {
+		    wishlistItems.add(wishlistItem);
 		} else {
-		    wishlist_items = new ArrayList<WishlistItem>();
-		    wishlist_items.add(wishlistItem);
+		    wishlistItems = new ArrayList<WishlistItem>();
+		    wishlistItems.add(wishlistItem);
 		}
-		wishlist.setItems(wishlist_items);
+		wishlist.setItems(wishlistItems);
 		Response response = this.putByWishlistId(yaasAware, wishlistId,
 			wishlist);
 		if (response.getStatus() != Status.OK.getStatusCode()) {
