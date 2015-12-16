@@ -173,7 +173,7 @@
                             <goal>generate-client</goal>
                         </goals>
                         <configuration>
-                            <sourceRamlUri>https://api.yaas.io/hybris/customer/b1/api-console/raml/api/api-specification.raml</sourceRamlUri>
+                            <sourceRamlUri>https://devportal.yaas.io/services/customer/v1/api.raml</sourceRamlUri>
                             <basePackage>com.sap.wishlist.client.customer</basePackage>
                         </configuration>
                     </execution>
@@ -184,7 +184,7 @@
                             <goal>generate-client</goal>
                         </goals>
                         <configuration>
-                            <sourceRamlUri>https://api.yaas.io/hybris/document/b2/api-console/raml/api/document.raml</sourceRamlUri>
+                            <sourceRamlUri>https://devportal.yaas.io/services/document/v1/api.raml</sourceRamlUri>
                             <basePackage>com.sap.wishlist.client.documentrepository</basePackage>
                         </configuration>
                     </execution>
@@ -195,7 +195,7 @@
                             <goal>generate-client</goal>
                         </goals>
                         <configuration>
-                            <sourceRamlUri>https://api.yaas.io/hybris/email/b1/api-console/raml/api/emailservice.raml</sourceRamlUri>
+                            <sourceRamlUri>https://devportal.yaas.io/services/email/v1/api.raml</sourceRamlUri>
                             <basePackage>com.sap.wishlist.client.email</basePackage>
                         </configuration>
                     </execution>
@@ -206,7 +206,7 @@
                             <goal>generate-client</goal>
                         </goals>
                         <configuration>
-                            <sourceRamlUri>https://api.yaas.io/hybris/media/b2/api-console/raml/api/media.raml</sourceRamlUri>
+                            <sourceRamlUri>https://devportal.yaas.io/services/media/v1/api.raml</sourceRamlUri>
                             <basePackage>com.sap.wishlist.client.mediaRepository</basePackage>
                         </configuration>
                     </execution>
