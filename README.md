@@ -13,12 +13,6 @@ You can open the API Console in a separate window by using the following link:
 - [API Console](https://api.yaas.io/hybris/java-jersey-wishlist/example)
 
 
-Tenant Information
-------------------
-
-You can use `playground` as the value for `hybris-tenant` (the project ID) to use it as a sandbox when experimenting with the service.
-
-
 API Overview
 ------------
 
