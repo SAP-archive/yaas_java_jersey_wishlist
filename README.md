@@ -10,15 +10,7 @@ API Console
 -----------
 
 You can open the API Console in a separate window by using the following link: 
-- [API Console](https://api.yaas.io/sap/java-wishlist/example)
-
-
-Tenant Information
-------------------
-
-You can use `playground` as the value for `hybris-tenant` (the project ID) to use it as a sandbox when experimenting with the service.
-
-Alternatively, you can [create a project](https://devportal.yaas.io/gettingstarted/setupaproject/index.html) in the Builder that contains a subscription to the package "Java Jersey Wishlist Example" with the ID `logvqzfhlrk5`. 
+- [API Console](https://api.yaas.io/hybris/java-jersey-wishlist/example)
 
 
 API Overview
@@ -34,6 +26,10 @@ The endpoint `/wishlists` enables you to:
   - Get a specific wishlist based on an ID.
   - Update a specific wishlist based on an ID.
   - Delete a specific wishlist based on an ID.
+
+The endpoint `/wishlists/{wishlistId}/wishlistItems` enables you to:
+  - get a specific wishlist and read its items
+  - create a new wishlist item and add it to the specific wishlist
   
 See also [WishlistService.java](src/main/java/com/sap/wishlist/service/WishlistService.java).
 
