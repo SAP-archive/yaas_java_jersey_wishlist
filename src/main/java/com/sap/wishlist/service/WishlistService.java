@@ -16,6 +16,7 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -26,12 +27,14 @@ import com.sap.cloud.yaas.servicesdk.authorization.AccessToken;
 import com.sap.cloud.yaas.servicesdk.authorization.DiagnosticContext;
 import com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionCallback;
 import com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionTemplate;
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginatedCollection;
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginationRequest;
+import com.sap.cloud.yaas.servicesdk.jerseysupport.pagination.PaginationSupport;
 import com.sap.wishlist.api.generated.Customer;
 import com.sap.wishlist.api.generated.DocumentWishlist;
 import com.sap.wishlist.api.generated.DocumentWishlistItemRead;
 import com.sap.wishlist.api.generated.DocumentWishlistRead;
 import com.sap.wishlist.api.generated.Error;
-import com.sap.wishlist.api.generated.PagedParameters;
 import com.sap.wishlist.api.generated.ResourceLocation;
 import com.sap.wishlist.api.generated.Wishlist;
 import com.sap.wishlist.api.generated.WishlistItem;
@@ -70,9 +73,11 @@ public class WishlistService {
 	private final String TEMPLATE_CODE = "wishlist";
 
 	/* GET / */
-	public Response get(final PagedParameters paged,
+	public Response get(final UriInfo uriInfo, final PaginationRequest paginationRequest,
 			final YaasAwareParameters yaasAware) {
-		ArrayList<Wishlist> result = null;
+		
+		PaginatedCollection<Wishlist> result = null;
+		
 		Response response = authorizedExecutionTemplate.executeAuthorized(
 				authorizationHelper.getAuthorizationScope(
 						yaasAware.getHybrisTenant(),
@@ -87,15 +92,16 @@ public class WishlistService {
 								.clientData(client)
 								.type(WISHLIST_PATH)
 								.prepareGet()
-								.withPageNumber(paged.getPageNumber())
-								.withPageSize(paged.getPageSize())
+								.withPageNumber(paginationRequest.getPageNumber())
+								.withPageSize(paginationRequest.getPageSize())
+								.withTotalCount(paginationRequest.isCountingTotal())
 								.withAuthorization(
 										authorizationHelper.buildToken(token))
 								.execute();
 					}
 				});
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-			result = new ArrayList<Wishlist>();
+			ArrayList<Wishlist> resultList = new ArrayList<Wishlist>();
 			for (DocumentWishlistRead documentWishlist : response
 					.readEntity(DocumentWishlistRead[].class)) {
 				Wishlist wishlist = documentWishlist.getWishlist();
@@ -112,14 +118,19 @@ public class WishlistService {
 					e.printStackTrace();
 					throw new InternalServerErrorException();
 				}
-				result.add(wishlist);
+				resultList.add(wishlist);
 			}
+			result = PaginatedCollection.<Wishlist>of(resultList).with(response, paginationRequest).build();
 
+			
 		} else {
 			ErrorHandler.handleResponse(response);
 		}
-
-		return Response.ok().entity(result).build();
+		
+		ResponseBuilder responseBuilder = Response.ok(result);
+		PaginationSupport.decorateResponseWithCount(responseBuilder, result);
+		PaginationSupport.decorateResponseWithPage(uriInfo, responseBuilder, result);
+		return responseBuilder.build();
 	}
 
 	/* POST / */
