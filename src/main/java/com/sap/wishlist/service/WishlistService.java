@@ -35,6 +35,7 @@ import com.sap.wishlist.api.generated.DocumentWishlist;
 import com.sap.wishlist.api.generated.DocumentWishlistItemRead;
 import com.sap.wishlist.api.generated.DocumentWishlistRead;
 import com.sap.wishlist.api.generated.Error;
+import com.sap.wishlist.api.generated.PagedParameters;
 import com.sap.wishlist.api.generated.ResourceLocation;
 import com.sap.wishlist.api.generated.Wishlist;
 import com.sap.wishlist.api.generated.WishlistItem;
@@ -75,9 +76,9 @@ public class WishlistService {
 	/* GET / */
 	public Response get(final UriInfo uriInfo, final PaginationRequest paginationRequest,
 			final YaasAwareParameters yaasAware) {
-		
+
 		PaginatedCollection<Wishlist> result = null;
-		
+
 		Response response = authorizedExecutionTemplate.executeAuthorized(
 				authorizationHelper.getAuthorizationScope(
 						yaasAware.getHybrisTenant(),
@@ -122,11 +123,11 @@ public class WishlistService {
 			}
 			result = PaginatedCollection.<Wishlist>of(resultList).with(response, paginationRequest).build();
 
-			
+
 		} else {
 			ErrorHandler.handleResponse(response);
 		}
-		
+
 		ResponseBuilder responseBuilder = Response.ok(result);
 		PaginationSupport.decorateResponseWithCount(responseBuilder, result);
 		PaginationSupport.decorateResponseWithPage(uriInfo, responseBuilder, result);
