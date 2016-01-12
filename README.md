@@ -76,9 +76,10 @@ How to Build and Test
 ---------------------
 
 In order to build the service locally, you need to [create an Application](https://devportal.yaas.io/gettingstarted/createanapplication/index.html) within your Project/Site, which subscribes to the following packages and scopes:
-- Email Package (Scopes: `hybris.email_send`, `hybris.email_manage`)
-- Core Services Package (Scopes: `hybris.media_manage`, `hybris.document_manage`, `hybris.document_view`)
-- Commerce as a Service Package (Scope: `hybris.customer_read`)
+- Email package (Scopes: `hybris.email_send`, `hybris.email_manage`)
+- Persistence package (`hybris.document_manage`, `hybris.document_view`)
+- Media package (Scopes: `hybris.media_manage`)
+- Customer Accounts package (Scope: `hybris.customer_read`)
 
 You must then set the following environment variables:
 - `YAAS_CLIENT`: Your *Application*'s *Identifier*
