@@ -15,7 +15,6 @@ applications:
   instances: 1
   memory: 1024M
   host: java-jersey-wishlist
-  domain: sample.com
   path: target/java-jersey-wishlist.war
   env:
     YAAS_CLIENT: java-jersey-wishlist
