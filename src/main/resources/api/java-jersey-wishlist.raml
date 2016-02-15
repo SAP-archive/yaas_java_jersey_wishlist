@@ -6,25 +6,28 @@ mediaType:  application/json
 
 schemas:
   - error: !include https://api.yaas.io/patterns/v1/schema-error-message.json
-  - documentMetaData: !include document/MetaData.json
-  - documentPostResponse: !include document/POSTresponse.json
-  - documentWishlist: !include document/Wishlist.json
-  - documentWishlistItem: !include document/WishlistItem.json
-  - documentWishlistItemRead: !include document/WishlistItemRead.json
-  - documentWishlistRead: !include document/WishlistRead.json
-  - documentWishlistMedia: !include document/WishlistMedia.json
-  - documentWishlistMediaRead: !include document/WishlistMediaRead.json
   - resourceLocation: !include https://api.yaas.io/patterns/v1/schema-resource-location.json
-  - customer: !include customer.json
-  - wishlist: !include wishlist.json
-  - wishlistItem: !include wishlistItem.json
-  - wishlistItems: !include wishlistItems.json
-  - wishlists: !include wishlists.json
-  - wishlistMedia: !include wishlistMedia.json
-  - wishlistMedias: !include wishlistMedias.json
+
+  - documentMetaData: !include schemas/document/MetaData.json
+  - documentPostResponse: !include schemas/document/POSTresponse.json
+  - documentWishlist: !include schemas/document/Wishlist.json
+  - documentWishlistItem: !include schemas/document/WishlistItem.json
+  - documentWishlistItemRead: !include schemas/document/WishlistItemRead.json
+  - documentWishlistRead: !include schemas/document/WishlistRead.json
+  - documentWishlistMedia: !include schemas/document/WishlistMedia.json
+  - documentWishlistMediaRead: !include schemas/document/WishlistMediaRead.json
+
+  - customer: !include schemas/customer/customer.json
+
+  - wishlist: !include schemas/wishlist.json
+  - wishlistItem: !include schemas/wishlistItem.json
+  - wishlistItems: !include schemas/wishlistItems.json
+  - wishlists: !include schemas/wishlists.json
+  - wishlistMedia: !include schemas/wishlistMedia.json
+  - wishlistMedias: !include schemas/wishlistMedias.json
 
 traits: 
-  - !include https://api.yaas.io/patterns/v1/trait-yaas-aware.yaml
+  - !include https://api.yaas.io/patterns/v2/trait-yaas-aware.yaml
   - !include https://api.yaas.io/patterns/v2/trait-paged.yaml
   - !include https://api.yaas.io/patterns/v1/trait-countable.yaml
 
@@ -38,17 +41,17 @@ resourceTypes:
   is: [yaasAware]
   get:
     is: [paged,countable]
-    description: Get all wishlists.
+    description: Gets all wishlists.
     responses:
       200:
         body:
           application/json:
-            example: !include wishlists-example.json
+            example: !include examples/wishlists.json
   post:
-    description: Check if the owner exists as a customer in the system, create a new wishlist, and send an e-mail to the customer.
+    description: Checks if the owner exists as a customer in the system, create a new wishlist, and send an e-mail to the customer.
     body:
       application/json:
-        example: !include wishlist-example.json
+        example: !include examples/wishlist.json
 
   /{wishlistId}:
     type: element
@@ -59,21 +62,21 @@ resourceTypes:
         example: 784hti8ey
         type: string
     get:
-      description: Get a wishlist.
+      description: Gets a wishlist.
       responses:
         200:
           body:
             application/json:
-              example: !include wishlist-example.json
+              example: !include examples/wishlist.json
 
     put:
-      description: Update a wishlist.
+      description: Updates a wishlist.
       body:
         application/json:
-          example: !include wishlist-example.json
+          example: !include examples/wishlist.json
 
     delete:
-      description: Delete a wishlist.
+      description: Deletes a wishlist.
       
     /media:
       is: [yaasAware]
@@ -109,7 +112,7 @@ resourceTypes:
             body: 
               "application/json": 
                   schema: wishlistMedias
-                  example: !include wishlistMedias-example.json
+                  example: !include examples/wishlistMedias.json
           400: 
             description: |
                 Bad or incomplete request.
@@ -149,9 +152,9 @@ resourceTypes:
         description: Adds a wishlist item
         body:
           application/json:
-            example: !include wishlistItem-example.json
+            example: !include examples/wishlistItem.json
         responses:
           201:
             body:
               application/json:
-                example: !include wishlistItem-example.json
+                example: !include examples/wishlistItem.json

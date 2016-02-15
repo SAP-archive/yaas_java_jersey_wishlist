@@ -17,7 +17,6 @@ applications:
   host: java-jersey-wishlist
   path: target/java-jersey-wishlist.war
   env:
-    YAAS_CLIENT: java-jersey-wishlist
-    YAAS_CLIENT_ID: please fill
-    YAAS_CLIENT_SECRET: please fill
-    YAAS_CLIENT_IS_APPLICATION: false
+    YAAS_CLIENT: please fill        # see "YaaS Client" field at "Dev Team"->"Services"->myService of builder
+    YAAS_CLIENT_ID: please fill     # see "Client Authorization" section at "Dev Team"->"Services"->myService of builder
+    YAAS_CLIENT_SECRET: please fill # see "Client Authorization" section at "Dev Team"->"Services"->myService of builder
