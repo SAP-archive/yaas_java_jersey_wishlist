@@ -5,14 +5,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.test.JerseyTest;
 import org.slf4j.LoggerFactory;
 
-import com.sap.cloud.yaas.servicesdk.jerseysupport.features.BeanValidationFeature;
 import com.sap.cloud.yaas.servicesdk.jerseysupport.features.JsonFeature;
 import com.sap.cloud.yaas.servicesdk.jerseysupport.logging.RequestResponseLoggingFilter;
+import com.sap.wishlist.JerseyApplication;
 
 
 public abstract class AbstractResourceTest extends JerseyTest {
@@ -22,19 +22,10 @@ public abstract class AbstractResourceTest extends JerseyTest {
 
 	@Override
 	protected final Application configure() {
-		final ResourceConfig application = configureApplication();
-
-		// needed for json serialization
-		application.register(JsonFeature.class);
-
-		// bean validation
-		application.register(BeanValidationFeature.class);
+		final ResourceConfig application = new JerseyApplication();
 
 		// configure spring context
 		application.property("contextConfigLocation", "classpath:/META-INF/applicationContext.xml");
-
-		// disable bean validation for tests
-		application.property(ServerProperties.BV_FEATURE_DISABLE, "true");
 
 		return application;
 	}
@@ -46,6 +37,7 @@ public abstract class AbstractResourceTest extends JerseyTest {
 
 		config.register(JsonFeature.class);
 		config.register(new RequestResponseLoggingFilter(LoggerFactory.getLogger(AbstractResourceTest.class), 1000));
+		config.register(MultiPartFeature.class);
 
 		super.configureClient(config);
 	}

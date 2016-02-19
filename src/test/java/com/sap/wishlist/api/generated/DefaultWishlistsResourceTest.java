@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
 import org.junit.Assert;
@@ -46,13 +47,13 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	 */
 	private static final String ROOT_RESOURCE_PATH = "/wishlists";
 	private static final String WISHLIST_ITEMS_PATH = "wishlistItems";
-	private static final String CLIENT = "test";
+	private static final String CLIENT = "sap.test";
 	private static final String TEST_FILE_FOR_UPLOAD = "src/test/resources/testMedia.png";
 
 	private static Wishlist wishlist;
 
-	private ArrayList<String> instanceList;
-	private ArrayList<String> instanceListMedia;
+	private final ArrayList<String> instanceList = new ArrayList<String>();
+	private final ArrayList<String> instanceListMedia = new ArrayList<String>();
 
 	@Inject
 	private WishlistMediaService cut;
@@ -69,9 +70,9 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		wishlist.setId(UUID.randomUUID().toString());
 		wishlist.setDescription("Test");
 		wishlist.setOwner(TestConstants.CUSTOMER);
+		wishlist.setTitle("test");
 
-		instanceList = new ArrayList<String>();
-		instanceListMedia = new ArrayList<String>();
+
 		instanceList.add(wishlist.getId());
 
 		createWishlist(wishlist);
@@ -98,6 +99,7 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		final Wishlist otherWishlist = new Wishlist();
 		otherWishlist.setId(UUID.randomUUID().toString());
 		otherWishlist.setOwner(TestConstants.CUSTOMER);
+		otherWishlist.setTitle("test");
 		instanceList.add(otherWishlist.getId());
 
 		final Response response = createWishlist(otherWishlist);
@@ -113,6 +115,7 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		final Wishlist otherWishlist = new Wishlist();
 		otherWishlist.setId(UUID.randomUUID().toString());
 		otherWishlist.setOwner(TestConstants.CUSTOMER);
+		otherWishlist.setTitle("test");
 		instanceList.add(otherWishlist.getId());
 		createWishlist(otherWishlist);
 
@@ -187,23 +190,29 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 
 	/* post(null) /wishlists/wishlistId/media */
 	@Test
-	public void testPostByWishlistIdMedia() throws FileNotFoundException {
+	public void testPostByWishlistIdMedia() throws IOException {
 		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
 				"/" + wishlist.getId() + "/media");
 
-		final Response response = target
-				.request()
-				.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
-				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
-				.post(Entity.entity(new ByteArrayInputStream("test".getBytes()), MediaType.APPLICATION_OCTET_STREAM_TYPE));
+		try (final FormDataMultiPart part = new FormDataMultiPart()) {
 
-		// Verify
-		assertEquals(Response.Status.CREATED.getStatusCode(),
-				response.getStatus());
-		final String mediaId = response.getHeaderString("location").substring(
-				response.getHeaderString("location").lastIndexOf("/") + 1);
-		instanceListMedia.add(mediaId);
-		assertNotNull(mediaId);
+			part.field("file", new ByteArrayInputStream("test".getBytes()),
+					MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+			final Response response = target
+					.request()
+					.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+					.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+					.post(Entity.entity(part, part.getMediaType()));
+
+			// Verify
+			assertEquals(Response.Status.CREATED.getStatusCode(),
+					response.getStatus());
+			final String mediaId = response.getHeaderString("location").substring(
+					response.getHeaderString("location").lastIndexOf("/") + 1);
+			instanceListMedia.add(mediaId);
+			assertNotNull(mediaId);
+		}
 	}
 
 	/* get() /wishlists/wishlistId/media */
@@ -271,7 +280,9 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		final Entity<Wishlist> entity = Entity.entity(entityBody,
 				"application/json");
 
-		return target.request().header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+		return target
+				.request()
+				.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
 				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
 				.post(entity);
 	}
