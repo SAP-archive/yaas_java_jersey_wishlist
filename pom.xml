@@ -179,13 +179,13 @@
                     </execution>
                     
                     <execution>
-                        <id>DocumentRepository</id>
+                        <id>Document</id>
                         <goals>
                             <goal>generate-client</goal>
                         </goals>
                         <configuration>
                             <sourceRamlUri>https://devportal.yaas.io/services/document/v1/api.raml</sourceRamlUri>
-                            <basePackage>com.sap.wishlist.client.documentrepository</basePackage>
+                            <basePackage>com.sap.wishlist.client.document</basePackage>
                         </configuration>
                     </execution>
                     
@@ -201,13 +201,13 @@
                     </execution>
                     
                     <execution>
-                        <id>MediaRepository</id>
+                        <id>Media</id>
                         <goals>
                             <goal>generate-client</goal>
                         </goals>
                         <configuration>
                             <sourceRamlUri>https://devportal.yaas.io/services/media/v1/api.raml</sourceRamlUri>
-                            <basePackage>com.sap.wishlist.client.mediaRepository</basePackage>
+                            <basePackage>com.sap.wishlist.client.media</basePackage>
                         </configuration>
                     </execution>
                 </executions>

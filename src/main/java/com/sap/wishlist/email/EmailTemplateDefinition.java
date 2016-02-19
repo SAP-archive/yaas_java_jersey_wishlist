@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
 public class EmailTemplateDefinition {
 	private String code;
 	private String owner;
@@ -17,7 +18,7 @@ public class EmailTemplateDefinition {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(final String code) {
 		this.code = code;
 	}
 
@@ -25,7 +26,7 @@ public class EmailTemplateDefinition {
 		return owner;
 	}
 
-	public void setOwner(String owner) {
+	public void setOwner(final String owner) {
 		this.owner = owner;
 	}
 

@@ -2,13 +2,14 @@ package com.sap.wishlist.email;
 
 import java.io.InputStream;
 
-public class EmailTemplate {
-	private String code;
-	private String owner;
-	private String fileType;
-	private InputStream dataStream;
 
-	private EmailTemplate(Builder builder) {
+public class EmailTemplate {
+	private final String code;
+	private final String owner;
+	private final String fileType;
+	private final InputStream dataStream;
+
+	private EmailTemplate(final Builder builder) {
 		this.dataStream = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream(builder.filePath);
 		this.code = builder.code;

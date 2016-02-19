@@ -11,13 +11,16 @@
         http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<context:component-scan base-package="com.sap.wishlist"/>
+	
+	<!-- include Service SDK libraries -->
+	<import resource="classpath:/META-INF/libraries-spring.xml"/>
 
-	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:/default.properties" />
-		<property name="searchSystemEnvironment" value="true" />
-	</bean>	
-		
+	<!-- import placeholder values from property files and environment, see default.properties -->
+	<context:property-placeholder location="classpath:/default.properties,classpath*:test.properties"/>
+
+	<!-- take annotation-based configuration into account, when instantiating beans -->
+	<context:annotation-config/>
+
 	<bean id="authorizedExecutionTemplate" autowire-candidate="true"
 		class="com.sap.cloud.yaas.servicesdk.authorization.integration.AuthorizedExecutionTemplate">
 		<constructor-arg ref="accessTokenProvider" />
@@ -28,6 +31,7 @@
 		<constructor-arg>
 			<bean
 				class="com.sap.cloud.yaas.servicesdk.authorization.protocol.ClientCredentialsGrantProvider">
+				<constructor-arg name="restClient" ref="jsonClient" />
 				<property name="tokenEndpointUri" value="${OAUTH2_TOKEN_URI}" />
 				<property name="clientId" value="${YAAS_CLIENT_ID}" />
 				<property name="clientSecret" value="${YAAS_CLIENT_SECRET}" />
@@ -35,13 +39,14 @@
 		</constructor-arg>
 	</bean>
 	
-	<bean id="jsonClient" class="com.sap.wishlist.client.ClientFactory" />
+	<bean id="jsonClient" class="com.sap.wishlist.utility.ClientFactory" />
 	    
 	<bean id="documentClient"
-	    class="com.sap.wishlist.client.documentrepository.DocumentClient">
+	    class="com.sap.wishlist.client.document.DocumentClient">
 	    <constructor-arg name="baseUri">
-	        <util:constant static-field="com.sap.wishlist.client.documentrepository.DocumentClient.DEFAULT_BASE_URI" />
+	        <util:constant static-field="com.sap.wishlist.client.document.DocumentClient.DEFAULT_BASE_URI" />
 	    </constructor-arg>
+	    <constructor-arg name="client" ref="jsonClient" />
 	</bean>
 	
 	<bean id="customerClient"
@@ -57,6 +62,14 @@
 	    <constructor-arg name="baseUri">
 	        <util:constant static-field="com.sap.wishlist.client.email.EmailServiceClient.DEFAULT_BASE_URI" />
 	    </constructor-arg>
+	    <constructor-arg name="client" ref="jsonClient" />
 	</bean>
 	
+	<bean id="mediaClient"
+	    class="com.sap.wishlist.client.media.MediaClient">
+	    <constructor-arg name="baseUri">
+	        <util:constant static-field="com.sap.wishlist.client.media.MediaClient.DEFAULT_BASE_URI" />
+	    </constructor-arg>
+	    <constructor-arg name="client" ref="jsonClient" />
+	</bean>
 </beans>

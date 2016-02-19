@@ -2,6 +2,7 @@ package com.sap.wishlist.email;
 
 import java.util.List;
 
+
 public class Email {
 	private String toAddress;
 	private String toName;
@@ -9,7 +10,7 @@ public class Email {
 	private String templateCode;
 	private String templateOwner;
 	private String locale;
-	protected List<TemplateAttributeValue> attributes;
+	private List<TemplateAttributeValue> attributes;
 
 	public String getToAddress() {
 		return toAddress;
@@ -39,7 +40,7 @@ public class Email {
 		return templateCode;
 	}
 
-	public void setTemplateCode(String templateCode) {
+	public void setTemplateCode(final String templateCode) {
 		this.templateCode = templateCode;
 	}
 
@@ -47,7 +48,7 @@ public class Email {
 		return templateOwner;
 	}
 
-	public void setTemplateOwner(String templateOwner) {
+	public void setTemplateOwner(final String templateOwner) {
 		this.templateOwner = templateOwner;
 	}
 
@@ -55,7 +56,7 @@ public class Email {
 		return locale;
 	}
 
-	public void setLocale(String locale) {
+	public void setLocale(final String locale) {
 		this.locale = locale;
 	}
 

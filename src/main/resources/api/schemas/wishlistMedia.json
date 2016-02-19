@@ -6,11 +6,12 @@
   {
     "id":
     {
-      "type":"String"
+      "type":"string"
     },
     "uri":
     {
-      "type":"uri"
+      "type":"string",
+      "format":"uri"
     }
   }
 }

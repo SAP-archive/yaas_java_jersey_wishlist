@@ -5,19 +5,8 @@ version: v1
 mediaType:  application/json
 
 schemas:
-  - error: !include https://api.yaas.io/patterns/v1/schema-error-message.json
+  - errorMessage: !include https://api.yaas.io/patterns/v1/schema-error-message.json
   - resourceLocation: !include https://api.yaas.io/patterns/v1/schema-resource-location.json
-
-  - documentMetaData: !include schemas/document/MetaData.json
-  - documentPostResponse: !include schemas/document/POSTresponse.json
-  - documentWishlist: !include schemas/document/Wishlist.json
-  - documentWishlistItem: !include schemas/document/WishlistItem.json
-  - documentWishlistItemRead: !include schemas/document/WishlistItemRead.json
-  - documentWishlistRead: !include schemas/document/WishlistRead.json
-  - documentWishlistMedia: !include schemas/document/WishlistMedia.json
-  - documentWishlistMediaRead: !include schemas/document/WishlistMediaRead.json
-
-  - customer: !include schemas/customer/customer.json
 
   - wishlist: !include schemas/wishlist.json
   - wishlistItem: !include schemas/wishlistItem.json
@@ -34,7 +23,6 @@ traits:
 resourceTypes: 
   - !include https://api.yaas.io/patterns/v2/resource-type-element.yaml
   - !include https://api.yaas.io/patterns/v1/resource-type-collection.yaml
-
 
 /wishlists:
   type: collection

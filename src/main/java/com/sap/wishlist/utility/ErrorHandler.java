@@ -1,23 +1,22 @@
 package com.sap.wishlist.utility;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Response;
+
+import com.sap.cloud.yaas.servicesdk.authorization.AccessToken;
+import com.sap.cloud.yaas.servicesdk.authorization.integration.AccessTokenInvalidException;
+
 
 public class ErrorHandler {
 
-	public static void handleResponse(Response response) {
+	public static RuntimeException resolveErrorResponse(final Response response, final AccessToken token) {
 		switch (response.getStatus()) {
-		case 400:
-			throw new BadRequestException();
-		case 401:
-			throw new NotAuthorizedException(response);
-		case 403:
-			throw new ForbiddenException();
-		case 404:
-			throw new NotFoundException();
+			case 401:
+				return new AccessTokenInvalidException("request unauthorized", token);
+			case 403:
+				return new AccessTokenInvalidException("request forbidden", token);
+			default:
+				return new InternalServerErrorException(response);
 		}
 	}
 }

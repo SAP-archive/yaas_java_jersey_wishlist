@@ -3,12 +3,12 @@ package com.sap.wishlist.api.generated;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -20,6 +20,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -36,6 +37,7 @@ import com.sap.cloud.yaas.servicesdk.patternsupport.traits.YaasAwareTrait;
 import com.sap.wishlist.api.TestConstants;
 import com.sap.wishlist.service.WishlistMediaService;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:/META-INF/applicationContext.xml")
 public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
@@ -43,15 +45,14 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	 * Server side root resource /wishlists
 	 */
 	private static final String ROOT_RESOURCE_PATH = "/wishlists";
-	private static final String REQUEST_URI = "https://local/wishlists";
 	private static final String WISHLIST_ITEMS_PATH = "wishlistItems";
 	private static final String CLIENT = "test";
 	private static final String TEST_FILE_FOR_UPLOAD = "src/test/resources/testMedia.png";
 
 	private static Wishlist wishlist;
 
-	private ArrayList<String> instanceList = new ArrayList<String>();
-	private ArrayList<String> instanceListMedia = new ArrayList<String>();
+	private ArrayList<String> instanceList;
+	private ArrayList<String> instanceListMedia;
 
 	@Inject
 	private WishlistMediaService cut;
@@ -69,6 +70,8 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		wishlist.setDescription("Test");
 		wishlist.setOwner(TestConstants.CUSTOMER);
 
+		instanceList = new ArrayList<String>();
+		instanceListMedia = new ArrayList<String>();
 		instanceList.add(wishlist.getId());
 
 		createWishlist(wishlist);
@@ -92,12 +95,12 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	/* post(entity) /wishlists */
 	@Test
 	public void testPostWithWishlist() {
-		Wishlist wishlist = new Wishlist();
-		wishlist.setId(UUID.randomUUID().toString());
-		wishlist.setOwner(TestConstants.CUSTOMER);
-		instanceList.add(wishlist.getId());
+		final Wishlist otherWishlist = new Wishlist();
+		otherWishlist.setId(UUID.randomUUID().toString());
+		otherWishlist.setOwner(TestConstants.CUSTOMER);
+		instanceList.add(otherWishlist.getId());
 
-		final Response response = createWishlist(wishlist);
+		final Response response = createWishlist(otherWishlist);
 
 		Assert.assertNotNull("Response must not be null", response);
 		Assert.assertEquals("Response does not have expected response code",
@@ -107,13 +110,13 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	/* post(entity) /wishlists */
 	@Test
 	public void testPostCheckDuplicateID() {
-		Wishlist wishlist = new Wishlist();
-		wishlist.setId(UUID.randomUUID().toString());
-		wishlist.setOwner(TestConstants.CUSTOMER);
-		instanceList.add(wishlist.getId());
-		createWishlist(wishlist);
+		final Wishlist otherWishlist = new Wishlist();
+		otherWishlist.setId(UUID.randomUUID().toString());
+		otherWishlist.setOwner(TestConstants.CUSTOMER);
+		instanceList.add(otherWishlist.getId());
+		createWishlist(otherWishlist);
 
-		final Response response = createWishlist(wishlist);
+		final Response response = createWishlist(otherWishlist);
 
 		Assert.assertNotNull("Response must not be null", response);
 		Assert.assertEquals(
@@ -124,12 +127,12 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	/* post(entity) /wishlists */
 	@Test
 	public void testPostWithInvalidWishlistOwner() {
-		Wishlist wishlist = new Wishlist();
-		wishlist.setId(UUID.randomUUID().toString());
-		wishlist.setOwner("Test");
-		instanceList.add(wishlist.getId());
+		final Wishlist otherWishlist = new Wishlist();
+		otherWishlist.setId(UUID.randomUUID().toString());
+		otherWishlist.setOwner("Test");
+		instanceList.add(otherWishlist.getId());
 
-		final Response response = createWishlist(wishlist);
+		final Response response = createWishlist(otherWishlist);
 
 		Assert.assertNotNull("Response must not be null", response);
 		Assert.assertEquals(
@@ -185,25 +188,30 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	/* post(null) /wishlists/wishlistId/media */
 	@Test
 	public void testPostByWishlistIdMedia() throws FileNotFoundException {
-		Response response = createWishlistMedia();
+		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
+				"/" + wishlist.getId() + "/media");
+
+		final Response response = target
+				.request()
+				.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+				.post(Entity.entity(new ByteArrayInputStream("test".getBytes()), MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
 		// Verify
 		assertEquals(Response.Status.CREATED.getStatusCode(),
 				response.getStatus());
-		String location = response.getHeaderString("location").substring(
+		final String mediaId = response.getHeaderString("location").substring(
 				response.getHeaderString("location").lastIndexOf("/") + 1);
-		instanceListMedia.add(location);
-		assertNotNull(location);
+		instanceListMedia.add(mediaId);
+		assertNotNull(mediaId);
 	}
 
 	/* get() /wishlists/wishlistId/media */
 	@Test
 	public void testGetByWishlistIdMedia() throws MalformedURLException,
 			NoSuchAlgorithmException, IOException {
-		Response response = createWishlistMedia();
-		String location = response.getHeaderString("location").substring(
-				response.getHeaderString("location").lastIndexOf("/") + 1);
-		instanceListMedia.add(location);
+		final String mediaId = createWishlistMediaInternal();
+		instanceListMedia.add(mediaId);
 
 		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
 				"/" + wishlist.getId() + "/media");
@@ -216,17 +224,17 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		Assert.assertEquals("Response does not have expected response code",
 				Status.OK.getStatusCode(), responseGet.getStatus());
 
-		WishlistMedia[] wishlistMedias = responseGet
+		final WishlistMedia[] wishlistMedias = responseGet
 				.readEntity(WishlistMedia[].class);
 		String actMD5 = null;
-		for (WishlistMedia wishlistMedia : wishlistMedias) {
-			if (location.equals(wishlistMedia.getId())) {
+		for (final WishlistMedia wishlistMedia : wishlistMedias) {
+			if (mediaId.equals(wishlistMedia.getId())) {
 				actMD5 = computeMD5ChecksumForURL(new URL(wishlistMedia
 						.getUri().toString()));
 			}
 		}
 
-		String expMD5 = computeMD5ChecksumForFile(TEST_FILE_FOR_UPLOAD);
+		final String expMD5 = computeMD5ChecksumForFile(TEST_FILE_FOR_UPLOAD);
 		Assert.assertEquals(
 				"File on media repository is different from file sent", expMD5,
 				actMD5);
@@ -236,12 +244,10 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	@Test
 	public void testDeleteByWishlistIdMediaByMediaId()
 			throws FileNotFoundException {
-		Response response = createWishlistMedia();
-		String location = response.getHeaderString("location").substring(
-				response.getHeaderString("location").lastIndexOf("/") + 1);
+		final String mediaId = createWishlistMediaInternal();
 
 		final Response responseDelete = deleteWishlistMedia(wishlist.getId(),
-				location);
+				mediaId);
 
 		Assert.assertNotNull("Response must not be null", responseDelete);
 		Assert.assertEquals("Response does not have expected response code",
@@ -250,18 +256,18 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 
 	@After
 	public void after() {
-		for (String instance : instanceListMedia) {
+		for (final String instance : instanceListMedia) {
 			deleteWishlistMedia(wishlist.getId(), instance);
 		}
 
-		for (String instance : instanceList) {
+		for (final String instance : instanceList) {
 			deleteWishlist(instance);
 		}
 	}
 
-	private Response createWishlist(Wishlist wishlist) {
+	private Response createWishlist(final Wishlist wishlistToCreate) {
 		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path("");
-		final Wishlist entityBody = wishlist;
+		final Wishlist entityBody = wishlistToCreate;
 		final Entity<Wishlist> entity = Entity.entity(entityBody,
 				"application/json");
 
@@ -270,17 +276,13 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 				.post(entity);
 	}
 
-	private Response createWishlistMedia() throws FileNotFoundException {
-		InputStream is = new FileInputStream(TEST_FILE_FOR_UPLOAD);
+	private String createWishlistMediaInternal() throws FileNotFoundException {
+		final InputStream is = new FileInputStream(TEST_FILE_FOR_UPLOAD);
 
-		URI requestUri = URI.create(REQUEST_URI + "/" + wishlist.getId()
-				+ "/media");
-
-		return cut.postByWishlistIdMedia(yaasAware, wishlist.getId(), is,
-				requestUri);
+		return cut.createWishlistMedia(yaasAware, wishlist.getId(), is);
 	}
 
-	private Response deleteWishlist(String wishlistId) {
+	private Response deleteWishlist(final String wishlistId) {
 		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
 				"/" + wishlistId);
 
@@ -289,7 +291,7 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 				.delete();
 	}
 
-	private Response deleteWishlistMedia(String wishlistId, String mediaId) {
+	private Response deleteWishlistMedia(final String wishlistId, final String mediaId) {
 		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
 				"/" + wishlistId + "/media/" + mediaId);
 
@@ -303,53 +305,53 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 	public void testGetByWishlistIdWishlistItems() {
 
 		final WebTarget target = getRootTarget(ROOT_RESOURCE_PATH).path(
-			"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
+				"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
 		final Response response = target.request()
-			.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
-			.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
-			.get();
+				.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+				.get();
 
 		Assert.assertNotNull("Response must not be null", response);
 		Assert.assertEquals("Response does not have expected response code",
-			Status.OK.getStatusCode(), response.getStatus());
+				Status.OK.getStatusCode(), response.getStatus());
 		Assert.assertNotNull("Response must not be null", response.readEntity(WishlistItem[].class));
 	}
 
 	@Test
 	// post() /wishlists/wishlistId/wishlistItems
 	public void testPostByWishlistIdWishlistItems() {
-		List<WishlistItem> wishlistItems = new ArrayList<WishlistItem>();
-		WishlistItem item = new WishlistItem();
+		final List<WishlistItem> wishlistItems = new ArrayList<WishlistItem>();
+		final WishlistItem item = new WishlistItem();
 		item.setProduct("Item1");
 		item.setAmount(1);
 		wishlistItems.add(item);
 		wishlist.setItems(wishlistItems);
 
 		final WebTarget targetPost = getRootTarget(ROOT_RESOURCE_PATH).path(
-			"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
+				"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
 
 		final Entity<WishlistItem> entity = Entity.entity(item,
-			"application/json");
+				"application/json");
 
 		final Response responsePost = targetPost.request()
-			.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
-			.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
-			.post(entity);
+				.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+				.post(entity);
 
 		Assert.assertNotNull("Response must not be null", responsePost);
 		Assert.assertEquals("Response does not have expected response code",
-			Status.CREATED.getStatusCode(), responsePost.getStatus());
+				Status.CREATED.getStatusCode(), responsePost.getStatus());
 
 		final WebTarget targetGet = getRootTarget(ROOT_RESOURCE_PATH).path(
-			"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
+				"/" + wishlist.getId() + "/" + WISHLIST_ITEMS_PATH);
 		final Response responseGet = targetGet.request()
-			.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
-			.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
-			.get();
+				.header(YaasAwareTrait.Headers.CLIENT, CLIENT)
+				.header(YaasAwareTrait.Headers.TENANT, TestConstants.TENANT)
+				.get();
 
 		Assert.assertNotNull("Response must not be null", responseGet);
 		Assert.assertEquals("Response does not have expected response code",
-			Status.OK.getStatusCode(), responseGet.getStatus());
+				Status.OK.getStatusCode(), responseGet.getStatus());
 
 		Assert.assertEquals(1, responseGet.readEntity(WishlistItem[].class).length);
 	}
@@ -362,37 +364,38 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
 		return application;
 	}
 
-	public static String computeMD5ChecksumForFile(String filename)
+	public static String computeMD5ChecksumForFile(final String filename)
 			throws NoSuchAlgorithmException, IOException {
-		InputStream inputStream = new FileInputStream(filename);
+		final InputStream inputStream = new FileInputStream(filename);
 		return computeMD5ChecksumForInputStream(inputStream);
 	}
 
-	public static String computeMD5ChecksumForURL(URL input)
+	public static String computeMD5ChecksumForURL(final URL input)
 			throws MalformedURLException, IOException, NoSuchAlgorithmException {
-		InputStream inputStream = input.openStream();
+		final InputStream inputStream = input.openStream();
 		return computeMD5ChecksumForInputStream(inputStream);
 	}
 
 	private static String computeMD5ChecksumForInputStream(
-			InputStream inputStream) throws NoSuchAlgorithmException,
-			IOException {
-		MessageDigest md = MessageDigest.getInstance("MD5");
+			final InputStream inputStream) throws NoSuchAlgorithmException,
+					IOException {
+		final MessageDigest md = MessageDigest.getInstance("MD5");
 
 		try {
-			InputStream digestInputStream = new DigestInputStream(inputStream,
+			final InputStream digestInputStream = new DigestInputStream(inputStream,
 					md);
 			while (digestInputStream.read() > 0) {
-				;
+				// do nothing
 			}
-		} finally {
+		}
+		finally {
 			inputStream.close();
 		}
-		byte[] digest = md.digest();
-		StringBuffer sb = new StringBuffer();
+		final byte[] digest = md.digest();
+		final StringBuffer sb = new StringBuffer();
 
-		for (int i = 0; i < digest.length; i++) {
-			sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16)
+		for (final byte element : digest) {
+			sb.append(Integer.toString((element & 0xff) + 0x100, 16)
 					.substring(1));
 		}
 		return sb.toString();

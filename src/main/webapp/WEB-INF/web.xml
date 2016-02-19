@@ -19,7 +19,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:/META-INF/java-jersey-wishlist-spring.xml</param-value>
+		<param-value>classpath:/META-INF/applicationContext.xml</param-value>
 	</context-param>
 
 	<!-- Service SDK libraries -->
