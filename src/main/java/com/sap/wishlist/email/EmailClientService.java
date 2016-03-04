@@ -86,7 +86,7 @@ public class EmailClientService {
 				.withPayload(Entity.entity(template.getDataStream(), MediaType.APPLICATION_OCTET_STREAM_TYPE))
 				.execute();
 
-		if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+		if (response.getStatus() == Response.Status.CREATED.getStatusCode() || response.getStatus() == Response.Status.OK.getStatusCode()) {
 			return;
 		}
 		throw ErrorHandler.resolveErrorResponse(response, token);
