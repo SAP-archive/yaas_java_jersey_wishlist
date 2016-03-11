@@ -65,7 +65,7 @@ public class WishlistService {
 
 			authHelper.wrapWithAuthorization(yaasAware, SCOPE_EMAIL_MANAGE,
 					token -> {
-						emailClient.uploadTemplateSubject(yaasAware, token);
+						emailClient.uploadTemplateBody(yaasAware, token);
 						return null;
 					});
 		}
