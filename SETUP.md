@@ -6,7 +6,7 @@ Prerequisites
 
 To get the most of this guide, you should be able to work with [Java](http://www.java.com/), [Apache Maven](http://maven.apache.org/), and [git](https://git-scm.com/).
 
-The list of required software and operating systems is listed on the [*Prerequisites*](https://devportal.yaas.io/gettingstarted/prerequisites/index.html) page of the Getting Started Guide on the Dev Portal.
+The list of required software and operating systems is listed on the [Prerequisites](https://devportal.yaas.io/gettingstarted/prerequisites/index.html) page of the Getting Started guides on the Dev Portal.
 
 
 Set Up a Project and Create an Application
@@ -18,7 +18,7 @@ You need credentials to access APIs on YaaS. The easiest way to get such credent
 
 2. Create or join an organization. Currently, only organizations outside the US can subscribe to beta packages on the YaaS Market for free.
 
-   If you don't have an organization yet, we suggest you create a test organization in another country, click on the *Get Approved* button and confirm your base path. This will allow you to carry on with the subscription to beta packages.
+   If you don't have an organization yet, we suggest you create a test organization in another country, click the **Get Approved** button and confirm your base path. This will allow you to carry on with the subscription to beta packages.
 
 3. Follow the instructions of the [Set Up a Project](https://devportal.yaas.io/gettingstarted/setupaproject/index.html) guide to create a new project and subscribe to the following beta packages:
 
@@ -39,7 +39,7 @@ You need credentials to access APIs on YaaS. The easiest way to get such credent
     - **hybris.document_view**
     - **hybris.document_manage**
 
-    Take note of the **Identifier** of your application as well as of its **Client ID** and **Client Secret**.
+    Take note of the **Identifier** of your application, as well as of its **Client ID** and **Client Secret**.
 
 
 Create a Customer
