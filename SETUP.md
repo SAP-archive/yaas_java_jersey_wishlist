@@ -54,7 +54,7 @@ From the point of view of this service, a wishlist belongs to one of your custom
     3. Enter the **client_id** and **client_secret** of your application.
     4. Enter the **grant_type** : `client_credentials`.
     5. Enter the **scope**: `hybris.customer_create`.
-    6. Send the request by clicking **POST**. Check that the OAuth2 service returns a response with the status **200 (OK)** and with a body containing the requested scope.
+    6. Send the request by clicking **POST**. Check that the OAuth2 service returns a response with the status `200 (OK)` and with a body containing the requested scope.
     7. Locate the **access_token** in the body of the response and take note of its value.
 
 2. Create the customer:
@@ -70,7 +70,7 @@ From the point of view of this service, a wishlist belongs to one of your custom
                 "contactEmail": "<your e-mail address>"
             }
 
-    6. Send the request by clicking **POST**. Check that the Customer service returns a response with the status **201 (Created)** and with a body containing the customer information.
+    6. Send the request by clicking **POST**. Check that the Customer service returns a response with the status `201 (Created)` and with a body containing the customer information.
     7. Take note of the **id** of your new customer.
 
 
