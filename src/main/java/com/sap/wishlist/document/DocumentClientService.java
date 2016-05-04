@@ -28,7 +28,6 @@ import com.sap.wishlist.api.generated.YaasAwareParameters;
 import com.sap.wishlist.client.document.DocumentClient;
 import com.sap.wishlist.utility.ErrorHandler;
 
-
 @ManagedBean
 public class DocumentClientService {
 	private static final String WISHLIST_PATH = "wishlist";
@@ -58,11 +57,11 @@ public class DocumentClientService {
 					.map(document -> transformWishlist(document))
 					.collect(Collectors.toList());
 
-			return PaginatedCollection.<Wishlist>of(wishlists)
+			return PaginatedCollection.<Wishlist> of(wishlists)
 					.with(response, paginationRequest)
 					.build();
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
-			return PaginatedCollection.of(Collections.<Wishlist>emptyList()).build();
+			return PaginatedCollection.of(Collections.<Wishlist> emptyList()).build();
 		}
 		throw ErrorHandler.resolveErrorResponse(response, token);
 	}
@@ -73,7 +72,7 @@ public class DocumentClientService {
 		return result;
 	}
 
-	public void createWishlist(final YaasAwareParameters yaasAware, final Wishlist wishlist, final AccessToken token) {
+	public String createWishlist(final YaasAwareParameters yaasAware, final Wishlist wishlist, final AccessToken token) {
 		final DocumentWishlist documentWishlist = new DocumentWishlist();
 		documentWishlist.setWishlist(wishlist);
 
@@ -88,7 +87,7 @@ public class DocumentClientService {
 				.execute();
 
 		if (response.getStatus() == Status.CREATED.getStatusCode()) {
-			return;
+			return response.readEntity(ResourceLocation.class).getId();
 		} else if (response.getStatus() == Status.CONFLICT.getStatusCode()) {
 			throw new WebApplicationException("Duplicate ID. Please provide another ID for the wishlist.", response);
 		}
@@ -107,7 +106,11 @@ public class DocumentClientService {
 				.execute();
 
 		if (response.getStatus() == Status.OK.getStatusCode()) {
-			return response.readEntity(DocumentWishlist.class).getWishlist();
+			final DocumentWishlist documentWishlist = response.readEntity(DocumentWishlist.class);
+			final Wishlist wishlist = documentWishlist.getWishlist();
+			wishlist.setCreatedAt(documentWishlist.getMetadata().getCreatedAt());
+			return wishlist;
+
 		} else if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
 			throw new NotFoundException("Cannot find wishlist with ID " + id, response);
 		}
@@ -156,7 +159,8 @@ public class DocumentClientService {
 		throw ErrorHandler.resolveErrorResponse(response, token);
 	}
 
-	public String createWishlistMedia(final YaasAwareParameters yaasAware, final String wishlistId, final String mediaId,
+	public String createWishlistMedia(final YaasAwareParameters yaasAware, final String wishlistId,
+			final String mediaId,
 			final URI location, final AccessToken token) {
 
 		final WishlistMedia wishlistMedia = new WishlistMedia();
@@ -203,7 +207,7 @@ public class DocumentClientService {
 					.map(document -> transformWishlistMedia(document))
 					.collect(Collectors.toList());
 
-			return PaginatedCollection.<WishlistMedia>of(medias)
+			return PaginatedCollection.<WishlistMedia> of(medias)
 					.with(response, paginationRequest)
 					.build();
 		}
@@ -217,7 +221,8 @@ public class DocumentClientService {
 		return result;
 	}
 
-	public WishlistMedia getWishlistMedia(final YaasAwareParameters yaasAware, final String mediaId, final AccessToken token) {
+	public WishlistMedia getWishlistMedia(final YaasAwareParameters yaasAware, final String mediaId,
+			final AccessToken token) {
 		final Response response = documentClient
 				.tenant(yaasAware.getHybrisTenant())
 				.client(client)
