@@ -16,7 +16,6 @@ import com.sap.wishlist.document.DocumentClientService;
 import com.sap.wishlist.email.EmailClientService;
 import com.sap.wishlist.utility.AuthorizationHelper;
 
-
 @ManagedBean
 public class WishlistService {
 
@@ -47,10 +46,9 @@ public class WishlistService {
 		final String email = authHelper.wrapWithAuthorization(yaasAware, SCOPE_CUSTOMER_VIEW,
 				token -> customerClient.getCustomer(yaasAware, wishlist.getOwner(), token));
 
-		authHelper.wrapWithAuthorization(yaasAware, SCOPE_DOCUMENT_MANAGE,
+		final String createdId = authHelper.wrapWithAuthorization(yaasAware, SCOPE_DOCUMENT_MANAGE,
 				token -> {
-					documentClient.createWishlist(yaasAware, wishlist, token);
-					return null;
+					return documentClient.createWishlist(yaasAware, wishlist, token);
 				});
 
 		final boolean created = authHelper.wrapWithAuthorization(yaasAware, SCOPE_EMAIL_MANAGE,
@@ -76,7 +74,7 @@ public class WishlistService {
 					return null;
 				});
 
-		return wishlist.getId();
+		return createdId;
 	}
 
 	public Wishlist getWishlist(final YaasAwareParameters yaasAware, final String wishlistId) {
@@ -111,7 +109,8 @@ public class WishlistService {
 				token -> documentClient.getWishlistItems(paged, yaasAware, wishlistId, token));
 	}
 
-	public void createWishlistItem(final YaasAwareParameters yaasAware, final String wishlistId, final WishlistItem wishlistItem) {
+	public void createWishlistItem(final YaasAwareParameters yaasAware, final String wishlistId,
+			final WishlistItem wishlistItem) {
 
 		final Wishlist wishlist = authHelper.wrapWithAuthorization(yaasAware, SCOPE_DOCUMENT_VIEW,
 				token -> documentClient.getWishlist(yaasAware, wishlistId, token));

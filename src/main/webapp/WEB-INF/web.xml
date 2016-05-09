@@ -52,6 +52,17 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+    <!-- Add RAML rewriting to static RAML resources that are part of the service 
+        meta-data -->
+    <filter>
+        <filter-name>ramlRewriterFilter</filter-name>
+        <filter-class>com.sap.cloud.yaas.servicesdk.ramlrewriter.filter.RamlRewriterFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ramlRewriterFilter</filter-name>
+        <url-pattern>/meta-data/*</url-pattern>
+    </filter-mapping>
+
 	<servlet>
 		<servlet-name>jerseyServlet</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -66,4 +77,11 @@
 		<servlet-name>jerseyServlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
+
+	 <!-- Make sure that static meta-data are being served normally -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/meta-data/*</url-pattern>
+    </servlet-mapping>
+
 </web-app>

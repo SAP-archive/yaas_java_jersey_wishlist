@@ -161,12 +161,18 @@
                 <artifactId>service-sdk-generator-maven-plugin</artifactId>
                 <version>${service-sdk.version}</version>
                 <executions>
-                    <execution>
-                        <id>Service</id>
-                        <goals>
-                            <goal>generate-service</goal>
-                        </goals>
-                    </execution>
+					<execution>
+						<id>service-generation</id>
+						<goals>
+							<goal>generate-service</goal>
+						</goals>
+						<configuration>
+							<outputPackageName>com.sap.wishlist.api.generated</outputPackageName>
+							<outputApiTitle>api</outputApiTitle>
+							<inputFolder>src/main/webapp/meta-data</inputFolder>
+							<async>false</async>
+						</configuration>
+					</execution>
                     <execution>
                         <id>Customer</id>
                         <goals>
