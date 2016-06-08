@@ -11,7 +11,7 @@ This project is licensed under the Apache Software License, v. 2 except as noted
 API Console
 -----------
 
-You can open the API Console in a separate window by using the following link: 
+You can open the API Console in a separate window by using the following link:
 - [API Console](https://api.yaas.io/hybris/java-jersey-wishlist/example)
 
 
