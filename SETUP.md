@@ -16,16 +16,16 @@ You need credentials to access APIs on YaaS. The easiest way to get such credent
 
 1. Register and sign in to the [Builder](https://builder.yaas.io/).
 
-2. Create or join an organization. Currently, only organizations outside the US can subscribe to beta packages on the YaaS Market for free.
+2. Create or join an organization.
 
-   If you don't have an organization yet, we suggest you create a test organization in another country, click the **Get Approved** button and confirm your base path. This will allow you to carry on with the subscription to beta packages.
+   If you don't have an organization yet, we suggest you create an organization with a non-commercial purpose. This will allow you to carry on with the subscription to beta packages.
 
 3. Follow the instructions of the [Set Up a Project](https://devportal.yaas.io/gettingstarted/setupaproject/index.html) guide to create a new project and subscribe to the following beta packages:
 
-    - Email package
-    - Persistence package
-    - Media package
-    - Customer Accounts package
+    - Customer Accounts (Beta)
+    - Email (Beta)
+    - Media (Beta)
+    - Persistence (Beta)
 
     Take note of the **Identifier** of your project.
 
@@ -59,7 +59,7 @@ From the point of view of this service, a wishlist belongs to one of your custom
 
 2. Create the customer:
 
-    1. Open the [API console for the Customer API](https://devportal.yaas.io/services/customer/latest/index.html) on the Dev Portal.
+    1. Open the [API console for the Customer API](https://devportal.yaas.io/services/customer/latest/apiconsole.html) on the Dev Portal.
     2. Select the **POST** method for the endpoint `{tenant}/customers`, then click **Try It**.
     3. Enter the **tenant** URL parameter: Use the **Identifier** of your project.
     4. Enter the **Authorization** header: `Bearer `, followed by the access token received above.
