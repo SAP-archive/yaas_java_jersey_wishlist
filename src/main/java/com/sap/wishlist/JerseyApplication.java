@@ -40,7 +40,7 @@ public class JerseyApplication extends ResourceConfig {
 		register(BeanValidationFeature.class);
 
 		// enable api-console
-		register(ApiConsoleFeature.class);
+		//register(ApiConsoleFeature.class);
 
 		// MultiPart Support
 		register(MultiPartFeature.class);
