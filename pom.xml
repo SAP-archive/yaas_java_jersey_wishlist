@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.sap.cloud.yaas.service-sdk</groupId>
 		<artifactId>service-sdk-superpom</artifactId>
-		<version>4.7.0</version>
+		<version>4.11.0</version>
 		<relativePath />
 	</parent>
 
@@ -17,16 +17,16 @@
 
 	<properties>
 		<!-- SAP projects -->
-		<service-sdk.version>4.7.0</service-sdk.version>
+		<service-sdk.version>4.11.0</service-sdk.version>
 
 		<!-- plugins -->
 		<jetty.plugin.version>9.3.7.v20160115</jetty.plugin.version>
 
 		<!-- libraries -->
 		<jaxrs.version>2.0.1</jaxrs.version>
-		<jersey.version>2.22.1</jersey.version>
+		<jersey.version>2.22.2</jersey.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
-		<spring.version>4.2.2.RELEASE</spring.version>
+		<spring.version>4.3.2.RELEASE</spring.version>
 		<cors.filter.version>2.5</cors.filter.version>
 
 		<!-- test libraries -->
@@ -34,6 +34,14 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.sap.cloud.yaas.service-sdk</groupId>
+			<artifactId>service-sdk-api-console</artifactId>
+			<version>${service-sdk.version}</version>
+			<classifier>overlay</classifier>
+			<type>war</type>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.sap.cloud.yaas.service-sdk</groupId>
 			<artifactId>service-sdk-libraries</artifactId>
@@ -155,12 +163,12 @@
 	<build>
 		<finalName>java-jersey-wishlist</finalName>
 		<plugins>
-        
-            <plugin>
-                <groupId>com.sap.cloud.yaas.service-sdk</groupId>
-                <artifactId>service-sdk-generator-maven-plugin</artifactId>
-                <version>${service-sdk.version}</version>
-                <executions>
+
+			<plugin>
+				<groupId>com.sap.cloud.yaas.service-sdk</groupId>
+				<artifactId>service-sdk-generator-maven-plugin</artifactId>
+				<version>${service-sdk.version}</version>
+				<executions>
 					<execution>
 						<id>service-generation</id>
 						<goals>
@@ -171,54 +179,55 @@
 							<outputApiTitle>api</outputApiTitle>
 							<inputFolder>src/main/webapp/meta-data</inputFolder>
 							<async>false</async>
+							<compatibilityModeEnabled>false</compatibilityModeEnabled>
 						</configuration>
 					</execution>
-                    <execution>
-                        <id>Customer</id>
-                        <goals>
-                            <goal>generate-client</goal>
-                        </goals>
-                        <configuration>
-                            <sourceRamlUri>https://devportal.yaas.io/services/customer/v1/api.raml</sourceRamlUri>
-                            <basePackage>com.sap.wishlist.client.customer</basePackage>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>Document</id>
-                        <goals>
-                            <goal>generate-client</goal>
-                        </goals>
-                        <configuration>
-                            <sourceRamlUri>https://devportal.yaas.io/services/document/v1/api.raml</sourceRamlUri>
-                            <basePackage>com.sap.wishlist.client.document</basePackage>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>EMail</id>
-                        <goals>
-                            <goal>generate-client</goal>
-                        </goals>
-                        <configuration>
-                            <sourceRamlUri>https://devportal.yaas.io/services/email/v1/api.raml</sourceRamlUri>
-                            <basePackage>com.sap.wishlist.client.email</basePackage>
-                        </configuration>
-                    </execution>
-                    
-                    <execution>
-                        <id>Media</id>
-                        <goals>
-                            <goal>generate-client</goal>
-                        </goals>
-                        <configuration>
-                            <sourceRamlUri>https://devportal.yaas.io/services/media/v1/api.raml</sourceRamlUri>
-                            <basePackage>com.sap.wishlist.client.media</basePackage>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
+					<execution>
+						<id>Customer</id>
+						<goals>
+							<goal>generate-client</goal>
+						</goals>
+						<configuration>
+							<sourceRamlUri>https://devportal.yaas.io/services/customer/v1/api.raml</sourceRamlUri>
+							<basePackage>com.sap.wishlist.client.customer</basePackage>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>Document</id>
+						<goals>
+							<goal>generate-client</goal>
+						</goals>
+						<configuration>
+							<sourceRamlUri>https://devportal.yaas.io/services/document/v1/api.raml</sourceRamlUri>
+							<basePackage>com.sap.wishlist.client.document</basePackage>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>EMail</id>
+						<goals>
+							<goal>generate-client</goal>
+						</goals>
+						<configuration>
+							<sourceRamlUri>https://devportal.yaas.io/services/email/v1/api.raml</sourceRamlUri>
+							<basePackage>com.sap.wishlist.client.email</basePackage>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>Media</id>
+						<goals>
+							<goal>generate-client</goal>
+						</goals>
+						<configuration>
+							<sourceRamlUri>https://devportal.yaas.io/services/media/v1/api.raml</sourceRamlUri>
+							<basePackage>com.sap.wishlist.client.media</basePackage>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
