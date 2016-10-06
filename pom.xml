@@ -221,7 +221,7 @@
 							<goal>generate-client</goal>
 						</goals>
 						<configuration>
-							<sourceRamlUri>https://devportal.yaas.io/services/media/v1/api.raml</sourceRamlUri>
+							<sourceRamlUri>https://devportal.yaas.io/services/media/v2/api.raml</sourceRamlUri>
 							<basePackage>com.sap.wishlist.client.media</basePackage>
 						</configuration>
 					</execution>
