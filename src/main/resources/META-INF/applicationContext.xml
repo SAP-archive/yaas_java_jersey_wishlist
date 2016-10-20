@@ -68,9 +68,9 @@
 	</bean>
 	
 	<bean id="mediaClient"
-	    class="com.sap.wishlist.client.media.MediaClient">
+	    class="com.sap.wishlist.client.media.SecureMediaClient">
 	    <constructor-arg name="baseUri">
-	        <util:constant static-field="com.sap.wishlist.client.media.MediaClient.DEFAULT_BASE_URI" />
+	        <util:constant static-field="com.sap.wishlist.client.media.SecureMediaClient.DEFAULT_BASE_URI" />
 	    </constructor-arg>
 	    <constructor-arg name="client" ref="jsonClient" />
 	</bean>

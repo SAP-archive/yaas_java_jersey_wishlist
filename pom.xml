@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.sap.cloud.yaas.service-sdk</groupId>
 		<artifactId>service-sdk-superpom</artifactId>
-		<version>4.11.0</version>
+		<version>4.11.0</version> 
 		<relativePath />
 	</parent>
 
@@ -18,6 +18,8 @@
 	<properties>
 		<!-- SAP projects -->
 		<service-sdk.version>4.11.0</service-sdk.version>
+
+		<json.version>20150729</json.version>
 
 		<!-- plugins -->
 		<jetty.plugin.version>9.3.7.v20160115</jetty.plugin.version>
@@ -34,6 +36,13 @@
 	</properties>
 
 	<dependencies>
+		<!-- JSON -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.sap.cloud.yaas.service-sdk</groupId>
 			<artifactId>service-sdk-api-console</artifactId>
