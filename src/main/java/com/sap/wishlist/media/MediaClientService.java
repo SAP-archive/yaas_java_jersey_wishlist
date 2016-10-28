@@ -39,7 +39,7 @@ public class MediaClientService {
         final JSONObject payload = new JSONObject();
         payload.put("Content-Type", MediaType.MULTIPART_FORM_DATA);
 
-        final Response response = mediaClient // get URL
+        final Response responseUrl = mediaClient // get URL
                 .$public()
                 .files()
                 .preparePost()
@@ -47,25 +47,24 @@ public class MediaClientService {
                 .withPayload(payload.toString())
                 .execute();
 
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            final JSONObject mediaCreate = new JSONObject(response.readEntity(String.class));
+        if (responseUrl.getStatus() == Response.Status.OK.getStatusCode()) {
+            final JSONObject mediaCreate = new JSONObject(responseUrl.readEntity(String.class));
             final String uploadLink = mediaCreate.getString("uploadLink");
             final String uploadEndpointId = mediaCreate.getString("id");
             final WebTarget webTarget = ClientBuilder.newClient().target(uploadLink);
-            final Response response1 = webTarget.request() // put media
+            final Response responsePut = webTarget.request() // put media
                     .put(Entity.entity(fileInputStream, MediaType.MULTIPART_FORM_DATA));
-            if (response1.getStatus() == Response.Status.OK.getStatusCode()) {
-                final Response response2 = mediaClient.$public().files().fileId(uploadEndpointId).commit() // commit
-                                                                                                           // media
-                        .preparePost().withAuthorization(token.toAuthorizationHeaderValue()).execute();
-                if (response2.getStatus() == Response.Status.OK.getStatusCode()) {
-                    final JSONObject mediaCommited = new JSONObject(response2.readEntity(String.class));
+            if (responsePut.getStatus() == Response.Status.OK.getStatusCode()) {
+                final Response responseCommit = mediaClient.$public().files().fileId(uploadEndpointId).commit() // commit
+                        .preparePost().withAuthorization(token.toAuthorizationHeaderValue()).execute(); // media
+                if (responseCommit.getStatus() == Response.Status.OK.getStatusCode()) {
+                    final JSONObject mediaCommited = new JSONObject(responseCommit.readEntity(String.class));
                     return mediaCommited;
                 }
             }
         }
 
-        throw ErrorHandler.resolveErrorResponse(response, token);
+        throw ErrorHandler.resolveErrorResponse(responseUrl, token);
     }
 
     public void deleteMedia(final YaasAwareParameters yaasAware, final String id, final AccessToken token) {

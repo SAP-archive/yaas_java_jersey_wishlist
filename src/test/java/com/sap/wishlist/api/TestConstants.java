@@ -1,6 +1,6 @@
 package com.sap.wishlist.api;
 
 public class TestConstants {
-    public static final String TENANT = "l2913671";
-    public static final String CUSTOMER = "C1200282937";
+    public static final String TENANT = "playground";
+    public static final String CUSTOMER = "C5869464350";
 }
