@@ -92,11 +92,6 @@
 
 	 <!-- Make sure that static meta-data are being served normally -->
     <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/meta-data/*</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
 	    <servlet-name>default</servlet-name>
 	    <url-pattern>/meta-data/*</url-pattern>
 	    <url-pattern>/api-console/*</url-pattern>
