@@ -103,7 +103,12 @@ public class DefaultWishlistsResource implements WishlistsResource {
 		final String id = wishlistMediaService.createWishlistMedia(yaasAware,
 				wishlistId, fileInputStream);
 
-		return Response.created(uriInfo.getRequestUriBuilder().path(id).build()).build();
+		final URI createdLocation = uriInfo.getRequestUriBuilder().path(id).build();
+		final ResourceLocation rc = new ResourceLocation();
+		rc.setId(id);
+		rc.setLink(createdLocation);
+
+		return Response.created(createdLocation).entity(rc).build();
 	}
 
 	/* GET //{wishlistId}/media */
