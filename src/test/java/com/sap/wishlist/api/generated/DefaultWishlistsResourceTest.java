@@ -210,6 +210,8 @@ public final class DefaultWishlistsResourceTest extends AbstractResourceTest {
                     response.getHeaderString("location").lastIndexOf("/") + 1);
             instanceListMedia.add(mediaId);
             assertNotNull(mediaId);
+
+            assertNotNull("Object RessourceLocation is missing", response.getEntity());
         }
     }
 
