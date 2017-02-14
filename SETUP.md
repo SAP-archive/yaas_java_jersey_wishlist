@@ -9,7 +9,7 @@ To get the most of this guide, you should be able to work with [Java](http://www
 The list of required software and operating systems is listed on the [Prerequisites](https://devportal.yaas.io/gettingstarted/prerequisites/index.html) page of the Getting Started guides on the Dev Portal.
 
 
-Set Up a Project and Create an Application
+Set Up a Project and Create an Client
 ------------------------------------------
 
 You need credentials to access APIs on YaaS. The easiest way to get such credentials is to declare that the API calls are made by one of your applications.
@@ -20,7 +20,7 @@ You need credentials to access APIs on YaaS. The easiest way to get such credent
 
    If you don't have an organization yet, we suggest you create a test organization in another country, click the **Get Approved** button and confirm your base path. This will allow you to carry on with the subscription to beta packages.
 
-3. Follow the instructions of the [Set Up a Project](https://devportal.yaas.io/gettingstarted/setupaproject/index.html) guide to create a new project and subscribe to the following beta packages:
+3. Follow the instructions of the [Create Projects](https://devportal.yaas.io/tools/builder/#CreateProjects) guide to create a new project and subscribe to the following beta packages:
 
     - Email package
     - Persistence package
@@ -29,7 +29,7 @@ You need credentials to access APIs on YaaS. The easiest way to get such credent
 
     Take note of the **Identifier** of your project.
 
-4. Follow the instructions of the [Create an Application](https://devportal.yaas.io/gettingstarted/createanapplication/index.html) guide to create an application for your project and select the required scopes:
+4. Create an client for your project and select the required scopes:
 
     - **hybris.customer_read**
     - **hybris.customer_create**
@@ -39,7 +39,7 @@ You need credentials to access APIs on YaaS. The easiest way to get such credent
     - **hybris.document_view**
     - **hybris.document_manage**
 
-    Take note of the **Identifier** of your application, as well as of its **Client ID** and **Client Secret**.
+    Take note of the **Identifier** of your client, as well as of its **Client ID** and **Client Secret**.
 
 
 Create a Customer
@@ -51,7 +51,7 @@ From the point of view of this service, a wishlist belongs to one of your custom
 
     1. Open the [API console for the OAuth2 API](https://devportal.yaas.io/services/oauth2/latest/apiconsole.html) on the Dev Portal.
     2. Select the **POST** method for the endpoint `/token`, then click **Try It**.
-    3. Enter the **client_id** and **client_secret** of your application.
+    3. Enter the **client_id** and **client_secret** of your client.
     4. Enter the **grant_type** : `client_credentials`.
     5. Enter the **scope**: `hybris.customer_create`.
     6. Send the request by clicking **POST**. Check that the OAuth2 service returns a response with the status `200 (OK)` and with a body containing the requested scope.
@@ -77,7 +77,7 @@ From the point of view of this service, a wishlist belongs to one of your custom
 Download and Customize the Source Code
 --------------------------------------
 
-The source code contains automated tests that ensure that the service works as expected. These tests need information about your test project. Moreover, you need to provide your application credentials so that the service can authenticate against YaaS.
+The source code contains automated tests that ensure that the service works as expected. These tests need information about your test project. Moreover, you need to provide your client credentials so that the service can authenticate against YaaS.
 
 1. Clone the git repository:
 
@@ -91,9 +91,9 @@ The source code contains automated tests that ensure that the service works as e
 
 3. Edit the file [default.properties](src/main/resources/default.properties) under `src/main/resources`:
 
-    * Set the parameter **YAAS_CLIENT_IS_APPLICATION** to `true`, as you are using the credentials of your application and run in single tenant mode.
-    * Set the parameter **YAAS_CLIENT** to the **Identifier** of your application.
-    * Set the parameter **YAAS_CLIENT_ID** to the **Client ID** of your application.
-    * Set the parameter **YAAS_CLIENT_SECRET** to the **Client Secret** of your application.
+    * Set the parameter **YAAS_CLIENT_IS_APPLICATION** to `true`, as you are using the credentials of your client and run in single tenant mode.
+    * Set the parameter **YAAS_CLIENT** to the **Identifier** of your client
+    * Set the parameter **YAAS_CLIENT_ID** to the **Client ID** of your client.
+    * Set the parameter **YAAS_CLIENT_SECRET** to the **Client Secret** of your client.
 
 We generally recommend to provide such credentials using environment variables. However, in this example, we set them in the source code for the sake of simplicity.
