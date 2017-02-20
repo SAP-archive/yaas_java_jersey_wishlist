@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.sap.cloud.yaas.service-sdk</groupId>
 		<artifactId>service-sdk-superpom</artifactId>
-		<version>4.11.0</version> 
+		<version>4.12.1</version> 
 		<relativePath />
 	</parent>
 
@@ -17,7 +17,7 @@
 
 	<properties>
 		<!-- SAP projects -->
-		<service-sdk.version>4.11.0</service-sdk.version>
+		<service-sdk.version>4.12.1</service-sdk.version>
 
 		<json.version>20150729</json.version>
 
