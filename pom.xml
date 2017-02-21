@@ -197,7 +197,7 @@
 							<goal>generate-client</goal>
 						</goals>
 						<configuration>
-							<sourceRamlUri>https://devportal.yaas.io/services/customer/v1/api.raml</sourceRamlUri>
+							<sourceRamlUri>https://devportal.yaas.io/services/beta/customer/v1/api.raml</sourceRamlUri>
 							<basePackage>com.sap.wishlist.client.customer</basePackage>
 						</configuration>
 					</execution>
@@ -208,7 +208,7 @@
 							<goal>generate-client</goal>
 						</goals>
 						<configuration>
-							<sourceRamlUri>https://devportal.yaas.io/services/document/v1/api.raml</sourceRamlUri>
+							<sourceRamlUri>https://devportal.yaas.io/services/beta/document/v1/api.raml</sourceRamlUri>
 							<basePackage>com.sap.wishlist.client.document</basePackage>
 						</configuration>
 					</execution>
@@ -219,7 +219,7 @@
 							<goal>generate-client</goal>
 						</goals>
 						<configuration>
-							<sourceRamlUri>https://devportal.yaas.io/services/email/v1/api.raml</sourceRamlUri>
+							<sourceRamlUri>https://devportal.yaas.io/services/beta/email/v1/api.raml</sourceRamlUri>
 							<basePackage>com.sap.wishlist.client.email</basePackage>
 						</configuration>
 					</execution>
@@ -230,7 +230,7 @@
 							<goal>generate-client</goal>
 						</goals>
 						<configuration>
-							<sourceRamlUri>https://devportal.yaas.io/services/media/v2/api.raml</sourceRamlUri>
+							<sourceRamlUri>https://devportal.yaas.io/services/beta/media/v2/api.raml</sourceRamlUri>
 							<basePackage>com.sap.wishlist.client.media</basePackage>
 						</configuration>
 					</execution>
