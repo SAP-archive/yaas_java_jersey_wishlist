@@ -96,4 +96,6 @@ The source code contains automated tests that ensure that the service works as e
     * Set the parameter **YAAS_CLIENT_ID** to the **Client ID** of your client.
     * Set the parameter **YAAS_CLIENT_SECRET** to the **Client Secret** of your client.
 
-We generally recommend to provide such credentials using environment variables. However, in this example, we set them in the source code for the sake of simplicity.
+We generally recommend to provide such credentials using environment variables. When deploying the service to CloudFoundry, the credentials should be provided as environment entries within the `manifest.yml` used for the deployment.
+
+However, in this example, we set them in the source code for the sake of simplicity.
