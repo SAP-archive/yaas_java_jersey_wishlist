@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.sap.cloud.yaas.service-sdk</groupId>
 		<artifactId>service-sdk-superpom</artifactId>
-		<version>4.12.1</version> 
+		<version>4.14.0</version>
 		<relativePath />
 	</parent>
 
@@ -17,18 +17,18 @@
 
 	<properties>
 		<!-- SAP projects -->
-		<service-sdk.version>4.12.1</service-sdk.version>
+		<service-sdk.version>4.14.0</service-sdk.version>
 
-		<json.version>20150729</json.version>
+		<json.version>20160810</json.version>
 
 		<!-- plugins -->
-		<jetty.plugin.version>9.3.7.v20160115</jetty.plugin.version>
+		<jetty.plugin.version>9.4.0.RC2</jetty.plugin.version>
 
 		<!-- libraries -->
 		<jaxrs.version>2.0.1</jaxrs.version>
-		<jersey.version>2.22.2</jersey.version>
+		<jersey.version>2.24</jersey.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
-		<spring.version>4.3.2.RELEASE</spring.version>
+		<spring.version>4.3.5.RELEASE</spring.version>
 		<cors.filter.version>2.5</cors.filter.version>
 
 		<!-- test libraries -->
