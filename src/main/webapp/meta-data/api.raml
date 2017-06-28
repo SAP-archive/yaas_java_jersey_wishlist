@@ -5,8 +5,8 @@ version: v1
 mediaType:  application/json
 
 schemas:
-  - errorMessage: !include https://api.yaas.io/patterns/v1/schema-error-message.json
-  - resourceLocation: !include https://api.yaas.io/patterns/v1/schema-resource-location.json
+  - errorMessage: !include https://pattern.yaas.io/v1/schema-error-message.json
+  - resourceLocation: !include https://pattern.yaas.io/v1/schema-resource-location.json
 
   - wishlist: !include schemas/wishlist.json
   - wishlistItem: !include schemas/wishlistItem.json
@@ -15,14 +15,14 @@ schemas:
   - wishlistMedia: !include schemas/wishlistMedia.json
   - wishlistMedias: !include schemas/wishlistMedias.json
 
-traits: 
-  - !include https://api.yaas.io/patterns/v2/trait-yaas-aware.yaml
-  - !include https://api.yaas.io/patterns/v2/trait-paged.yaml
-  - !include https://api.yaas.io/patterns/v1/trait-countable.yaml
+traits:
+  - !include https://pattern.yaas.io/v2/trait-yaas-aware.yaml
+  - !include https://pattern.yaas.io/v2/trait-paged.yaml
+  - !include https://pattern.yaas.io/v1/trait-countable.yaml
 
-resourceTypes: 
-  - !include https://api.yaas.io/patterns/v2/resource-type-element.yaml
-  - !include https://api.yaas.io/patterns/v1/resource-type-collection.yaml
+resourceTypes:
+  - !include https://pattern.yaas.io/v2/resource-type-element.yaml
+  - !include https://pattern.yaas.io/v1/resource-type-collection.yaml
 
 /wishlists:
   type: collection
@@ -65,47 +65,47 @@ resourceTypes:
 
     delete:
       description: Deletes a wishlist.
-      
+
     /media:
       is: [yaasAware]
       post:
-        body: 
-          multipart/form-data: 
-            formParameters: 
-                file: 
+        body:
+          multipart/form-data:
+            formParameters:
+                file:
                     description: |
                         Actual file content.
                     type: file
                     required: false
                     repeat: false
-        responses: 
-          201: 
+        responses:
+          201:
             description: |
                 The request succeeded and a new object was created.
-            body: 
-                application/json: 
+            body:
+                application/json:
                     schema: resourceLocation
-          400: 
+          400:
             description: |
                 Bad or incomplete request.
-            body: 
-              application/json: 
+            body:
+              application/json:
                   schema: errorMessage
       get:
         is: [ paged,countable ]
-        responses: 
-          200: 
+        responses:
+          200:
             description: |
                 The request succeeded and a new object was created.
-            body: 
-              "application/json": 
+            body:
+              "application/json":
                   schema: wishlistMedias
                   example: !include examples/wishlistMedias.json
-          400: 
+          400:
             description: |
                 Bad or incomplete request.
-            body: 
-              "application/json": 
+            body:
+              "application/json":
                   schema: errorMessage
       /{mediaId}:
         is: [yaasAware]
@@ -120,11 +120,11 @@ resourceTypes:
             204:
               description : |
                 The resource has been successfully deleted.
-            404: 
+            404:
                 description: |
                     Media not found.
-                body: 
-                    application/json: 
+                body:
+                    application/json:
                         schema: "errorMessage"
     /wishlistItems:
       type: collection
