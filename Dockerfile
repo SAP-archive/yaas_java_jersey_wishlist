@@ -26,7 +26,7 @@ ARG maintainer=undefined
 ARG app={{artifactId}}
 
 # You can also set the JAVA VM Options by passing the 'JAVA_OPTS' argument or you can use the pre-defined default values.
-ARG JAVA_OPTS="-Xms400M -Xmx512M"
+ARG JAVA_OPTS="-Xms400M -Xmx1024M"
 
 LABEL maintainer=$maintainer app=$app
 
