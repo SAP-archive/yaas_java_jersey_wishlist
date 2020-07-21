@@ -1,3 +1,8 @@
+![](https://img.shields.io/badge/STATUS-NOT%20CURRENTLY%20MAINTAINED-red.svg?longCache=true&style=flat)
+
+# Important Notice
+We have decided to stop the maintenance of this public GitHub repository.
+
 # yaas_java_jersey_wishlist
 This is an example implementation of the YaaS [Wishlist service](https://devportal.yaas.io/gettingstarted/createaservice/index.html) based on Java. It shows how to implement a basic service and how to integrate with other services on YaaS.
 
